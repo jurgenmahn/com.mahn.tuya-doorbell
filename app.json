@@ -11,12 +11,38 @@
     "en": "Tuya doorbell local API"
   },
   "description": {
-    "en": "connects the tuya doorbell to the homey by using the device api, so no cloud connection and a lot faster response"
+    "en": "Connects Tuya doorbells directly via local API with automatic discovery and real-time events"
   },
   "category": [
-    "appliances"
+    "security"
   ],
-  "permissions": [],
+  "permissions": [
+    "homey:manager:network",
+    "homey:manager:discovery",
+    "homey:manager:storage"
+  ],
+  "images": {
+    "small": "/assets/images/small.png",
+    "large": "/assets/images/large.png",
+    "xlarge": "/assets/images/xlarge.png"
+  },
+  "drivers": [
+    {
+      "id": "VideoDoorbell",
+      "name": {
+        "en": "Video Doorbell"
+      },
+      "class": "doorbell",
+      "icon": "/assets/icon.svg",
+      "connectivity": ["lan"],
+      "pair": {
+        "view": "list",
+        "options": {
+          "singular": true
+        }
+      }
+    }
+  ],
   "images": {
     "small": "/assets/images/small.png",
     "large": "/assets/images/large.png",

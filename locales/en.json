@@ -1,1 +1,45 @@
-{}
+{
+  "pair": {
+    "select_device": {
+      "title": "Select Your Doorbell",
+      "button": "Add Device"
+    },
+    "manual_entry": {
+      "title": "Manual Configuration",
+      "device_id": "Device ID",
+      "local_key": "Local Key",
+      "ip_address": "IP Address",
+      "port": "Port (default 6668)",
+      "auto_discovery": "Enable Automatic Discovery"
+    },
+    "discovery": {
+      "searching": "Searching for devices...",
+      "found": "Discovered %d devices",
+      "instructions": "Make sure your doorbell is in pairing mode"
+    }
+  },
+  "settings": {
+    "video_stream": {
+      "label": "Video Stream URL",
+      "placeholder": "rtsp:// or http://"
+    },
+    "event_history": {
+      "label": "Event History Storage",
+      "days": " days"
+    }
+  },
+  "flow": {
+    "triggers": {
+      "doorbell_pressed": "When doorbell is pressed",
+      "motion_detected": "When motion is detected"
+    },
+    "actions": {
+      "snap_image": "Capture doorbell image",
+      "enable_motion": "Enable motion detection"
+    }
+  },
+  "errors": {
+    "discovery_failed": "Device discovery failed. Please check network settings.",
+    "invalid_credentials": "Invalid device credentials"
+  }
+}
