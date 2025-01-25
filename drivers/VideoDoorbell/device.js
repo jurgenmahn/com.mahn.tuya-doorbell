@@ -32,16 +32,23 @@ class VideoDoorbellDevice extends Homey.Device {
   }
 
   handleDeviceData(data) {
+    // Doorbell button press (DPS 1)
     if (data.dps['1']) {
       this.triggerFlow('doorbell_pressed');
       this.setCapabilityValue('button', true)
         .then(() => this.setCapabilityValue('button', false));
     }
     
+    // Motion detection (DPS 2)
     if (data.dps['2']) {
       this.triggerFlow('motion_detected');
       this.setCapabilityValue('alarm_motion', data.dps['2']);
     }
+    
+    // Battery level (DPS 3 - example only)
+    // if (data.dps['3']) {
+    //   this.setCapabilityValue('measure_battery', data.dps['3']);
+    // }
   }
 
   triggerFlow(flowId) {
