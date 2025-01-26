@@ -19,10 +19,23 @@ class VideoDoorbellDevice extends Homey.Device {
       version: '3.3'
     });
 
-    this.tuyaDevice.on('connected', () => this.log('Connected to device'));
-    this.tuyaDevice.on('disconnected', () => this.log('Disconnected from device'));
-    this.tuyaDevice.on('error', error => this.log('Device error:', error));
-    this.tuyaDevice.on('data', data => this.handleDeviceData(data));
+    // Setup device event listeners
+    this.tuyaDevice
+      .on('connected', () => {
+        this.log('Connected to device');
+        this.homey.app.log('Doorbell connected');
+        this.setAvailable();
+      })
+      .on('disconnected', () => {
+        this.log('Disconnected from device');
+        this.homey.app.log('Doorbell disconnected');
+        this.setUnavailable();
+      })
+      .on('error', error => {
+        this.log('Device error:', error);
+        this.homey.app.log('Doorbell error:', error);
+      })
+      .on('data', data => this.handleDeviceData(data));
   }
 
   registerCapabilities() {
@@ -44,11 +57,27 @@ class VideoDoorbellDevice extends Homey.Device {
       this.triggerFlow('motion_detected');
       this.setCapabilityValue('alarm_motion', data.dps['2']);
     }
-    
-    // Battery level (DPS 3 - example only)
-    // if (data.dps['3']) {
-    //   this.setCapabilityValue('measure_battery', data.dps['3']);
-    // }
+
+    // Doorbell ring with media payload (DPS 185)
+    if (data.dps['185']) {
+      try {
+        const buffer = Buffer.from(data.dps['185'], 'base64');
+        const responseData = JSON.parse(buffer.toString('utf-8'));
+        
+        if (responseData.cmd === 'ipc_doorbell') {
+          this.homey.app.log('Doorbell ring event with media:', responseData.files);
+          this.triggerFlow('doorbell_pressed', {
+            images: responseData.files.map(file => ({
+              path: file[0],
+              id: file[1],
+              url: `https://${responseData.bucket}.oss-us-west-1.aliyuncs.com${file[0]}`
+            }))
+          });
+        }
+      } catch (error) {
+        this.log('Error processing media payload:', error);
+      }
+    }
   }
 
   triggerFlow(flowId) {
