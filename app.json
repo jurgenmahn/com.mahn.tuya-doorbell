@@ -11,37 +11,13 @@
     "en": "Tuya doorbell local API"
   },
   "description": {
-    "en": "Connects Tuya doorbells directly via local API with automatic discovery and real-time events"
+    "en": "connects the tuya doorbell to the homey by using the device api, so no cloud connection and a lot faster response"
   },
   "category": [
     "security"
   ],
   "permissions": [
-    "homey:manager:network",
-    "homey:manager:discovery",
-    "homey:manager:storage"
-  ],
-  "images": {
-    "small": "/assets/images/small.png",
-    "large": "/assets/images/large.png",
-    "xlarge": "/assets/images/xlarge.png"
-  },
-  "drivers": [
-    {
-      "id": "VideoDoorbell",
-      "name": {
-        "en": "Video Doorbell"
-      },
-      "class": "doorbell",
-      "icon": "/assets/icon.svg",
-      "connectivity": ["lan"],
-      "pair": {
-        "view": "list",
-        "options": {
-          "singular": true
-        }
-      }
-    }
+    "homey:manager:api"
   ],
   "images": {
     "small": "/assets/images/small.png",
@@ -51,5 +27,66 @@
   "author": {
     "name": "Jurgen Mahn",
     "email": "jurgen@mahn.it"
+  },
+  "drivers": [
+    {
+      "id": "VideoDoorbell",
+      "name": {
+        "en": "Video Doorbell"
+      },
+      "class": "doorbell",
+      "icon": "/assets/icon.svg",
+      "capabilities": [
+        "onoff",
+        "button",
+        "alarm_motion"
+      ],
+      "connectivity": [
+        "lan"
+      ],
+      "pair": [
+        {
+          "id": "start",
+          "template": "start"
+        },
+        {
+          "id": "list_devices",
+          "template": "list_devices",
+          "navigation": {
+            "next": "add_devices"
+          }
+        },
+        {
+          "id": "add_devices",
+          "template": "add_devices"
+        }
+      ]
+    }
+  ],
+  "capabilities": {
+    "alarm_motion": {
+      "type": "boolean",
+      "title": {
+        "en": "Motion Alarm"
+      },
+      "getable": true,
+      "setable": false
+    },
+    "button": {
+      "type": "boolean",
+      "title": {
+        "en": "Button"
+      },
+      "getable": true,
+      "setable": false
+    },
+    "onoff": {
+      "type": "boolean",
+      "title": {
+        "en": "On/Off"
+      },
+      "getable": true,
+      "setable": true
+    }
   }
 }
