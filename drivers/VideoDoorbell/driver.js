@@ -31,7 +31,15 @@ class VideoDoorbellDriver extends Homey.Driver {
           port: settings.port
         }
       };
-      await session.showView('add_device');
+      await session.showView('list_devices');
+      session.emit('list_devices', [pairingDevice]);
+    });
+
+    session.setHandler('list_devices', async () => {
+      if (pairingDevice.data) {
+        return [pairingDevice];
+      }
+      return [];
     });
   }
 

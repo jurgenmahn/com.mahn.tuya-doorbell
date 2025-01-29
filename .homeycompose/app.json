@@ -41,19 +41,26 @@
       ],
       "pair": [
         {
-          "id": "start",
-          "template": "start"
-        },
-        {
-          "id": "list_devices",
-          "template": "list_devices",
+          "id": "pair_method",
           "navigation": {
-            "next": "add_devices"
+            "next": "manual_settings"
           }
         },
         {
-          "id": "add_devices",
-          "template": "add_devices"
+          "id": "manual_settings",
+          "navigation": {
+            "next": "list_devices"
+          }
+        },
+        {
+          "id": "auto_search",
+          "navigation": {
+            "next": "list_devices"
+          }
+        },
+        {
+          "id": "list_devices",
+          "template": "list_devices"
         }
       ]
     }
