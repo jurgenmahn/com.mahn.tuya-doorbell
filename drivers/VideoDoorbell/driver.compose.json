@@ -31,22 +31,13 @@
   "connectivity": ["lan"],
   "pair": [
     {
-      "id": "pair_method",
-      "template": "pair_method",
+      "id": "start",
       "navigation": {
         "next": "manual_settings"
       }
     },
     {
       "id": "manual_settings",
-      "template": "manual_settings",
-      "navigation": {
-        "next": "list_devices"
-      }
-    },
-    {
-      "id": "auto_search",
-      "template": "auto_search",
       "navigation": {
         "next": "list_devices"
       }
