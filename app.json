@@ -28,34 +28,65 @@
     "name": "Jurgen Mahn",
     "email": "jurgen@mahn.it"
   },
-  "flow": {
-    "triggers": [
-      {
-        "id": "doorbell_pressed",
-        "title": {
-          "en": "Doorbell Pressed"
-        },
-        "args": [
-          {
-            "name": "device",
-            "type": "device",
-            "filter": "driver_id=VideoDoorbell"
-          }
-        ]
+  "drivers": [
+    {
+      "id": "VideoDoorbell",
+      "name": {
+        "en": "Video Doorbell"
       },
-      {
-        "id": "motion_detected",
-        "title": {
-          "en": "Motion Detected"
+      "class": "doorbell",
+      "icon": "/assets/icon.svg",
+      "capabilities": [
+        "onoff",
+        "button",
+        "alarm_motion"
+      ],
+      "connectivity": [
+        "lan"
+      ],
+      "pair": [
+        {
+          "id": "start",
+          "template": "start"
         },
-        "args": [
-          {
-            "name": "device",
-            "type": "device",
-            "filter": "driver_id=VideoDoorbell"
+        {
+          "id": "list_devices",
+          "template": "list_devices",
+          "navigation": {
+            "next": "add_devices"
           }
-        ]
-      }
-    ]
+        },
+        {
+          "id": "add_devices",
+          "template": "add_devices"
+        }
+      ]
+    }
+  ],
+  "capabilities": {
+    "alarm_motion": {
+      "type": "boolean",
+      "title": {
+        "en": "Motion Alarm"
+      },
+      "getable": true,
+      "setable": false
+    },
+    "button": {
+      "type": "boolean",
+      "title": {
+        "en": "Button"
+      },
+      "getable": true,
+      "setable": false
+    },
+    "onoff": {
+      "type": "boolean",
+      "title": {
+        "en": "On/Off"
+      },
+      "getable": true,
+      "setable": true
+    }
   }
 }
