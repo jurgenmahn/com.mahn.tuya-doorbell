@@ -10,28 +10,27 @@ class VideoDoorbellDriver extends Homey.Driver {
     let pairingDevice = {};
 
 
-    session.setHandler('manual_settings', async (settings) => {
+    session.setHandler('manual_settings', async (data) => {
+      this.homey.app.log('Received manual_settings data:', data);
+
       pairingDevice = {
         name: 'Tuya Doorbell',
         data: {
-          id: settings.deviceId
+          id: data.deviceId
         },
         settings: {
-          deviceId: settings.deviceId,
-          localKey: settings.localKey,
-          ipAddress: settings.ipAddress,
-          port: settings.port
+          deviceId: data.deviceId,
+          localKey: data.localKey,
+          ipAddress: data.ipAddress,
+          port: data.port || 6668
         }
       };
-      await session.showView('list_devices');
+
       session.emit('list_devices', [pairingDevice]);
     });
 
     session.setHandler('list_devices', async () => {
-      if (pairingDevice.data) {
-        return [pairingDevice];
-      }
-      return [];
+      return [pairingDevice];
     });
   }
 

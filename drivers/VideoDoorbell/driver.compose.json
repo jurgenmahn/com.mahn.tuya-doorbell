@@ -3,10 +3,9 @@
   "name": {
     "en": "Video Doorbell"
   },
-  "class": "doorbell",
+  "class": "sensor",
   "icon": "/drivers/VideoDoorbell/assets/icon.svg",
   "capabilities": [
-    "onoff",
     "button", 
     "alarm_motion"
   ],

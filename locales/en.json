@@ -4,17 +4,13 @@
       "title": "Add Tuya Video Doorbell",
       "subtitle": "Make sure you have the Device ID, Local Key, and IP Address ready."
     },
-    "select_device": {
-      "title": "Select Your Doorbell",
-      "button": "Add Device"
+    "manual_settings": {
+      "title": "Enter Device Information",
+      "instructions": "Please enter the required device details."
     },
-    "manual_entry": {
-      "title": "Manual Configuration",
-      "device_id": "Device ID",
-      "local_key": "Local Key",
-      "ip_address": "IP Address",
-      "port": "Port (default 6668)",
-      "auto_discovery": "Enable Automatic Discovery"
+    "list_devices": {
+      "title": "Select Your Doorbell",
+      "instructions": "Tap your doorbell to add it to Homey."
     },
     "discovery": {
       "searching": "Searching for devices...",
