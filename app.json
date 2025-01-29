@@ -50,7 +50,59 @@
   },
   "drivers": [
     {
-      "id": "VideoDoorbell"
+      "id": "VideoDoorbell",
+      "name": {
+        "en": "Video Doorbell"
+      },
+      "class": "sensor",
+      "icon": "/drivers/VideoDoorbell/assets/icon.svg",
+      "capabilities": [
+        "button",
+        "alarm_motion"
+      ],
+      "images": {
+        "small": "/drivers/VideoDoorbell/assets/images/small.png",
+        "large": "/drivers/VideoDoorbell/assets/images/large.png",
+        "xlarge": "/drivers/VideoDoorbell/assets/images/xlarge.png"
+      },
+      "capabilitiesOptions": {
+        "button": {
+          "title": {
+            "en": "Doorbell Button"
+          }
+        },
+        "alarm_motion": {
+          "title": {
+            "en": "Motion Detection"
+          }
+        }
+      },
+      "platforms": [
+        "local"
+      ],
+      "connectivity": [
+        "lan"
+      ],
+      "pair": [
+        {
+          "id": "start",
+          "template": "start",
+          "navigation": {
+            "next": "manual_settings"
+          }
+        },
+        {
+          "id": "manual_settings",
+          "template": "manual_settings",
+          "navigation": {
+            "next": "list_devices"
+          }
+        },
+        {
+          "id": "list_devices",
+          "template": "list_devices"
+        }
+      ]
     }
   ],
   "capabilities": {
