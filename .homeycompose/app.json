@@ -36,15 +36,6 @@
       },
       "class": "doorbell",
       "icon": "/drivers/VideoDoorbell/assets/icon.svg",
-      "pair": [
-        {
-          "id": "list_devices", 
-          "template": "list_devices",
-          "navigation": {
-            "next": "done"
-          }
-        }
-      ],
       "capabilities": [
         "onoff",
         "button",
@@ -66,9 +57,17 @@
       "connectivity": ["lan"],
       "images": {
         "small": "/drivers/VideoDoorbell/assets/images/small.png",
-        "large": "/drivers/VideoDoorbell/assets/images/large.png"
+        "large": "/drivers/VideoDoorbell/assets/images/large.png",
+        "xlarge": "/drivers/VideoDoorbell/assets/images/xlarge.png"
       },
       "pair": [
+        {
+          "id": "pair_method",
+          "template": "pair_method",
+          "navigation": {
+            "next": "manual_settings"
+          }
+        },
         {
           "id": "pair_method",
           "navigation": {
