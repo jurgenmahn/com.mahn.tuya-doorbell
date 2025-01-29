@@ -6,31 +6,78 @@ class VideoDoorbellDriver extends Homey.Driver {
     this.homey.app.log('Tuya Doorbell Driver initialized');
   }
 
-  async onPairListDevices() {
-    try {
-      const discoveryStrategy = this.getDiscoveryStrategy();
-      const results = await discoveryStrategy.discover();
-      
-      return Object.values(results).map(device => ({
-        name: device.productName,
+  async onPair(session) {
+    let pairingDevice = {};
+
+    session.setHandler('manual_input', () => {
+      session.showView('manual_settings');
+    });
+
+    session.setHandler('auto_search', () => {
+      session.showView('auto_search');
+      this.discoverDevices(session);
+    });
+
+    session.setHandler('manual_settings', async (settings) => {
+      pairingDevice = {
+        name: 'Tuya Doorbell',
         data: {
-          id: device.id
+          id: settings.deviceId
         },
         settings: {
-          ipAddress: device.ip,
-          localKey: device.key,
-          deviceId: device.id,
-          port: 6668
+          deviceId: settings.deviceId,
+          localKey: settings.localKey,
+          ipAddress: settings.ipAddress,
+          port: settings.port
         }
-      }));
-    } catch (error) {
-      this.homey.app.log('Discovery failed:', error);
-      throw new Error(this.homey.__('errors.discovery_failed'));
-    }
+      };
+      await session.showView('add_device');
+    });
   }
 
-  getDiscoveryStrategy() {
-    return this.homey.discovery.getStrategy('tuya');
+  async discoverDevices(session) {
+    try {
+      const devices = [];
+      const dgram = require('dgram');
+      const socket = dgram.createSocket('udp4');
+      
+      socket.on('message', (msg, rinfo) => {
+        try {
+          const data = JSON.parse(msg.toString());
+          if (data.gwId) {
+            devices.push({
+              name: 'Tuya Doorbell',
+              data: {
+                id: data.gwId
+              },
+              settings: {
+                deviceId: data.gwId,
+                ipAddress: rinfo.address,
+                port: 6668
+              }
+            });
+            session.emit('list_devices', devices);
+          }
+        } catch (err) {
+          this.log('Error parsing device response:', err);
+        }
+      });
+
+      // Broadcast discovery message
+      const discoveryMessage = Buffer.from('{"t": "scan"}');
+      socket.send(discoveryMessage, 0, discoveryMessage.length, 6668, '255.255.255.255');
+
+      // Close socket after 10 seconds
+      setTimeout(() => {
+        socket.close();
+        if (devices.length === 0) {
+          session.emit('list_devices', []);
+        }
+      }, 10000);
+    } catch (error) {
+      this.log('Discovery failed:', error);
+      session.emit('list_devices', []);
+    }
   }
 }
 
