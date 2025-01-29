@@ -63,6 +63,36 @@
       ]
     }
   ],
+  "flow": {
+    "triggers": [
+      {
+        "id": "doorbell_pressed",
+        "title": {
+          "en": "Doorbell Pressed"
+        },
+        "args": [
+          {
+            "name": "device",
+            "type": "device",
+            "filter": "driver_id=VideoDoorbell"
+          }
+        ]
+      },
+      {
+        "id": "motion_detected",
+        "title": {
+          "en": "Motion Detected"
+        },
+        "args": [
+          {
+            "name": "device",
+            "type": "device",
+            "filter": "driver_id=VideoDoorbell"
+          }
+        ]
+      }
+    ]
+  },
   "capabilities": {
     "alarm_motion": {
       "type": "boolean",
