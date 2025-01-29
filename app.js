@@ -11,17 +11,9 @@ module.exports = class TuyaDoorbellApp extends Homey.App {
   }
 
   _registerFlowCards() {
-    // When doorbell is pressed
-    this.homey.flow.getDeviceTriggerCard('doorbell_pressed')
-      .registerRunListener(async (args, state) => {
-        return true;
-      });
-
-    // When motion is detected  
-    this.homey.flow.getDeviceTriggerCard('motion_detected')
-      .registerRunListener(async (args, state) => {
-        return true;
-      });
+    // Register flow trigger cards
+    this.doorbellPressedTrigger = this.homey.flow.getDeviceTriggerCard('doorbell_pressed');
+    this.motionDetectedTrigger = this.homey.flow.getDeviceTriggerCard('motion_detected');
   }
 
   log(...args) {

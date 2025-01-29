@@ -81,9 +81,13 @@ class VideoDoorbellDevice extends Homey.Device {
   }
 
   triggerFlow(flowId) {
-    this.homey.flow.getTriggerCard(flowId)
-      .trigger(this)
-      .catch(error => this.log('Flow trigger error:', error));
+    const triggerCard = this.homey.flow.getDeviceTriggerCard(flowId);
+    if (triggerCard) {
+      triggerCard.trigger(this)
+        .catch(error => this.log('Flow trigger error:', error));
+    } else {
+      this.log(`Trigger card ${flowId} not found`);
+    }
   }
 
   async onSettings(oldSettings, newSettings) {
