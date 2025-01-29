@@ -5,7 +5,6 @@
   },
   "class": "doorbell",
   "icon": "/drivers/VideoDoorbell/assets/icon.svg",
-  "discovery": "none",
   "capabilities": [
     "onoff",
     "button", 
