@@ -63,6 +63,24 @@
       ]
     }
   ],
+  "flow": {
+    "triggers": [
+      {
+        "id": "doorbell_pressed",
+        "title": {
+          "en": "Doorbell is pressed"
+        },
+        "tokens": []
+      },
+      {
+        "id": "motion_detected",
+        "title": {
+          "en": "Motion is detected"
+        },
+        "tokens": []
+      }
+    ]
+  },
   "capabilities": {
     "alarm_motion": {
       "type": "boolean",
