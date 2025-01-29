@@ -9,21 +9,43 @@
     "button",
     "alarm_motion"
   ],
+  "capabilitiesOptions": {
+    "button": {
+      "title": {
+        "en": "Doorbell Button"
+      }
+    },
+    "alarm_motion": {
+      "title": {
+        "en": "Motion Detection"
+      }
+    }
+  },
   "platforms": ["local"],
   "connectivity": ["lan"],
+  "discovery": "local",
   "images": {
     "small": "/drivers/VideoDoorbell/assets/images/small.png",
     "large": "/drivers/VideoDoorbell/assets/images/large.png"
   },
   "pair": [
     {
-      "id": "pair_method"
+      "id": "pair_method",
+      "navigation": {
+        "next": "manual_settings"
+      }
     },
     {
-      "id": "manual_settings"
+      "id": "manual_settings",
+      "navigation": {
+        "next": "list_devices"
+      }
     },
     {
-      "id": "auto_search"
+      "id": "auto_search",
+      "navigation": {
+        "next": "list_devices"
+      }
     },
     {
       "id": "list_devices",
