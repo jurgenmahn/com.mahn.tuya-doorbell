@@ -28,6 +28,25 @@
     "name": "Jurgen Mahn",
     "email": "jurgen@mahn.it"
   },
+  "brandColor": "#000000",
+  "flow": {
+    "triggers": [
+      {
+        "title": {
+          "en": "Doorbell is pressed"
+        },
+        "tokens": [],
+        "id": "doorbell_pressed"
+      },
+      {
+        "title": {
+          "en": "Motion is detected"
+        },
+        "tokens": [],
+        "id": "motion_detected"
+      }
+    ]
+  },
   "drivers": [
     {
       "id": "VideoDoorbell",
@@ -35,11 +54,31 @@
         "en": "Video Doorbell"
       },
       "class": "doorbell",
-      "icon": "/assets/icon.svg",
+      "icon": "/drivers/VideoDoorbell/assets/icon.svg",
       "capabilities": [
         "onoff",
         "button",
         "alarm_motion"
+      ],
+      "images": {
+        "small": "/drivers/VideoDoorbell/assets/images/small.png",
+        "large": "/drivers/VideoDoorbell/assets/images/large.png",
+        "xlarge": "/drivers/VideoDoorbell/assets/images/xlarge.png"
+      },
+      "capabilitiesOptions": {
+        "button": {
+          "title": {
+            "en": "Doorbell Button"
+          }
+        },
+        "alarm_motion": {
+          "title": {
+            "en": "Motion Detection"
+          }
+        }
+      },
+      "platforms": [
+        "local"
       ],
       "connectivity": [
         "lan"
@@ -47,18 +86,29 @@
       "pair": [
         {
           "id": "start",
-          "template": "start"
-        },
-        {
-          "id": "list_devices",
-          "template": "list_devices",
+          "template": "choice",
+          "options": {
+            "title": {
+              "en": "Add Tuya Video Doorbell"
+            },
+            "subtitle": {
+              "en": "Make sure you have the device ID, local key, and IP address ready"
+            }
+          },
           "navigation": {
-            "next": "add_devices"
+            "next": "manual_settings"
           }
         },
         {
-          "id": "add_devices",
-          "template": "add_devices"
+          "id": "manual_settings",
+          "template": "manual_settings",
+          "navigation": {
+            "next": "list_devices"
+          }
+        },
+        {
+          "id": "list_devices",
+          "template": "list_devices"
         }
       ]
     }
