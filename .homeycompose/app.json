@@ -39,6 +39,12 @@
         "button",
         "alarm_motion"
       ],
+      "platforms": ["local"],
+      "connectivity": ["lan"],
+      "images": {
+        "small": "/drivers/VideoDoorbell/assets/images/small.png",
+        "large": "/drivers/VideoDoorbell/assets/images/large.png"
+      },
       "pair": [
         {
           "id": "pair_method"
