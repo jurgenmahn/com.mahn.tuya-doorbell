@@ -4,11 +4,18 @@
     "en": "Video Doorbell"
   },
   "class": "doorbell",
+  "icon": "/drivers/VideoDoorbell/assets/icon.svg",
+  "discovery": "none",
   "capabilities": [
     "onoff",
-    "button",
+    "button", 
     "alarm_motion"
   ],
+  "images": {
+    "small": "/drivers/VideoDoorbell/assets/images/small.png",
+    "large": "/drivers/VideoDoorbell/assets/images/large.png",
+    "xlarge": "/drivers/VideoDoorbell/assets/images/xlarge.png"
+  },
   "capabilitiesOptions": {
     "button": {
       "title": {
@@ -30,25 +37,31 @@
   "pair": [
     {
       "id": "pair_method",
+      "template": "pair_method",
       "navigation": {
         "next": "manual_settings"
       }
     },
     {
       "id": "manual_settings",
+      "template": "manual_settings",
       "navigation": {
         "next": "list_devices"
       }
     },
     {
       "id": "auto_search",
+      "template": "auto_search",
       "navigation": {
         "next": "list_devices"
       }
     },
     {
       "id": "list_devices",
-      "template": "list_devices"
+      "template": "list_devices",
+      "navigation": {
+        "next": "add_my_device"
+      }
     }
   ]
 }
