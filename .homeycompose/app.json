@@ -35,13 +35,13 @@
       },
       "class": "doorbell",
       "capabilities": [
-        "onoff",
         "button",
         "alarm_motion"
       ],
       "pair": [
         {
-          "id": "start"
+          "id": "start",
+          "template": "start"
         },
         {
           "id": "list_devices",
