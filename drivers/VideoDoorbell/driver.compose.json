@@ -6,10 +6,21 @@
   "class": "doorbell",
   "icon": "/assets/icon.svg",
   "connectivity": ["lan"],
-  "pair": {
-    "view": "list",
-    "options": {
-      "singular": true
+  "pair": [
+    {
+      "id": "start",
+      "template": "start"
+    },
+    {
+      "id": "list_devices",
+      "template": "list_devices",
+      "navigation": {
+        "next": "add_devices"
+      }
+    },
+    {
+      "id": "add_devices",
+      "template": "add_devices"
     }
-  }
+  ]
 }
