@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "compose": true,
   "sdk": 3,
+  "compatibility": ">=8.0.0",
   "platforms": [
     "local"
   ],
