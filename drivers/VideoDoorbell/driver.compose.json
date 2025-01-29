@@ -56,7 +56,7 @@
       "id": "list_devices",
       "template": "list_devices",
       "navigation": {
-        "next": "add"
+        "next": "done"
       }
     }
   ]
