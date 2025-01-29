@@ -32,12 +32,22 @@
   "pair": [
     {
       "id": "start",
+      "template": "choice",
+      "options": {
+        "title": {
+          "en": "Add Tuya Video Doorbell"
+        },
+        "subtitle": {
+          "en": "Make sure you have the device ID, local key, and IP address ready"
+        }
+      },
       "navigation": {
         "next": "manual_settings"
       }
     },
     {
       "id": "manual_settings",
+      "template": "manual_settings",
       "navigation": {
         "next": "list_devices"
       }
