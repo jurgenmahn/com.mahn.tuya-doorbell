@@ -38,10 +38,10 @@
       "icon": "/drivers/VideoDoorbell/assets/icon.svg",
       "pair": [
         {
-          "id": "list_devices",
+          "id": "list_devices", 
           "template": "list_devices",
           "navigation": {
-            "next": "add_my_device"
+            "next": "done"
           }
         }
       ],
