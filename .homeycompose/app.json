@@ -31,7 +31,7 @@
   "brandColor": "#000000",
   "drivers": [
     {
-      "id": "VideoDoorbell",
+      "id": "VideoDoorbell"
     }
   ]
 }
