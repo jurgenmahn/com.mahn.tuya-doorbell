@@ -28,7 +28,36 @@
     "name": "Jurgen Mahn",
     "email": "jurgen@mahn.it"
   },
-  "drivers": [
+  "flow": {
+    "triggers": [
+      {
+        "id": "doorbell_pressed",
+        "title": {
+          "en": "Doorbell Pressed"
+        },
+        "args": [
+          {
+            "name": "device",
+            "type": "device",
+            "filter": "driver_id=VideoDoorbell"
+          }
+        ]
+      },
+      {
+        "id": "motion_detected",
+        "title": {
+          "en": "Motion Detected"
+        },
+        "args": [
+          {
+            "name": "device",
+            "type": "device",
+            "filter": "driver_id=VideoDoorbell"
+          }
+        ]
+      }
+    ]
+  },
     {
       "id": "VideoDoorbell",
       "name": {
