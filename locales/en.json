@@ -1,5 +1,9 @@
 {
   "pair": {
+    "start": {
+      "title": "Add Tuya Video Doorbell",
+      "subtitle": "Make sure you have the Device ID, Local Key, and IP Address ready."
+    },
     "select_device": {
       "title": "Select Your Doorbell",
       "button": "Add Device"

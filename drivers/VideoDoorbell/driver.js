@@ -9,14 +9,6 @@ class VideoDoorbellDriver extends Homey.Driver {
   async onPair(session) {
     let pairingDevice = {};
 
-    session.setHandler('manual_input', () => {
-      session.showView('manual_settings');
-    });
-
-    session.setHandler('auto_search', () => {
-      session.showView('auto_search');
-      this.discoverDevices(session);
-    });
 
     session.setHandler('manual_settings', async (settings) => {
       pairingDevice = {
