@@ -5,6 +5,11 @@
   },
   "class": "doorbell",
   "icon": "/assets/icon.svg",
+  "capabilities": [
+    "onoff",
+    "button",
+    "alarm_motion"
+  ],
   "connectivity": ["lan"],
   "pair": [
     {
