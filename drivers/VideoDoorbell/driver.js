@@ -49,11 +49,22 @@ class VideoDoorbellDriver extends Homey.Driver {
       const dgram = require('dgram');
       const socket = dgram.createSocket('udp4');
       
+      socket.on('error', (err) => {
+        this.log('Socket error:', err);
+        socket.close();
+      });
+
+      socket.on('listening', () => {
+        socket.setBroadcast(true);
+        const discoveryMessage = Buffer.from('{"t": "scan"}');
+        socket.send(discoveryMessage, 0, discoveryMessage.length, 6668, '255.255.255.255');
+      });
+      
       socket.on('message', (msg, rinfo) => {
         try {
           const data = JSON.parse(msg.toString());
           if (data.gwId) {
-            devices.push({
+            const device = {
               name: 'Tuya Doorbell',
               data: {
                 id: data.gwId
@@ -63,25 +74,26 @@ class VideoDoorbellDriver extends Homey.Driver {
                 ipAddress: rinfo.address,
                 port: 6668
               }
-            });
-            session.emit('list_devices', devices);
+            };
+            if (!devices.find(d => d.data.id === device.data.id)) {
+              devices.push(device);
+              session.emit('list_devices', devices);
+            }
           }
         } catch (err) {
           this.log('Error parsing device response:', err);
         }
       });
 
-      // Broadcast discovery message
-      const discoveryMessage = Buffer.from('{"t": "scan"}');
-      socket.send(discoveryMessage, 0, discoveryMessage.length, 6668, '255.255.255.255');
+      socket.bind();
 
-      // Close socket after 10 seconds
+      // Close socket after 30 seconds
       setTimeout(() => {
         socket.close();
         if (devices.length === 0) {
           session.emit('list_devices', []);
         }
-      }, 10000);
+      }, 30000);
     } catch (error) {
       this.log('Discovery failed:', error);
       session.emit('list_devices', []);

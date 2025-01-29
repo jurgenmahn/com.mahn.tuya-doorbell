@@ -41,26 +41,56 @@
       ],
       "pair": [
         {
-          "id": "pair_method",
-          "navigation": {
-            "next": "manual_settings"
-          }
+          "id": "pair_method"
         },
         {
-          "id": "manual_settings",
-          "navigation": {
-            "next": "list_devices"
-          }
+          "id": "manual_settings"
         },
         {
-          "id": "auto_search",
-          "navigation": {
-            "next": "list_devices"
-          }
+          "id": "auto_search"
         },
         {
           "id": "list_devices",
           "template": "list_devices"
+        }
+      ],
+      "settings": [
+        {
+          "type": "group",
+          "label": {
+            "en": "Device Settings"
+          },
+          "children": [
+            {
+              "id": "deviceId",
+              "type": "text",
+              "label": {
+                "en": "Device ID"
+              }
+            },
+            {
+              "id": "localKey",
+              "type": "text",
+              "label": {
+                "en": "Local Key"
+              }
+            },
+            {
+              "id": "ipAddress",
+              "type": "text",
+              "label": {
+                "en": "IP Address"
+              }
+            },
+            {
+              "id": "port",
+              "type": "number",
+              "label": {
+                "en": "Port"
+              },
+              "value": 6668
+            }
+          ]
         }
       ]
     }
