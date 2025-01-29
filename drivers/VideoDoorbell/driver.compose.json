@@ -23,7 +23,6 @@
   },
   "platforms": ["local"],
   "connectivity": ["lan"],
-  "discovery": "local",
   "images": {
     "small": "/drivers/VideoDoorbell/assets/images/small.png",
     "large": "/drivers/VideoDoorbell/assets/images/large.png"
