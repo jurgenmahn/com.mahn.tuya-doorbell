@@ -100,6 +100,7 @@
         {
           "id": "start",
           "menu": "first",
+          "template": "drivers/Tuyavideodoorbell/pair/start.html",
           "title": {
             "en": "Add Doorbell"
           },
