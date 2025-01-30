@@ -1,24 +1,24 @@
 <!-- Empty template required by Homey pairing flow -->
 <!-- Manual Settings Input -->
 <div class="container">
-  <h2>{{__ 'pair.manual_settings.title'}}</h2>
+  <h2>Homey.__("pair.manual_settings.title")</h2>
   <form data-role="advanced">
     <div>
-      <label>{{__ 'pair.manual_settings.fields.0.label'}}</label>
+      <label>Homey.__("pair.manual_settings.fields.0.label")</label>
       <input type="text" name="deviceId" required />
     </div>
     <div>
-      <label>{{__ 'pair.manual_settings.fields.1.label'}}</label>
+      <label>Homey.__("pair.manual_settings.fields.1.label")</label>
       <input type="password" name="localKey" required />
     </div>
     <div>
-      <label>{{__ 'pair.manual_settings.fields.2.label'}}</label>
+      <label>Homey.__("pair.manual_settings.fields.2.label")</label>
       <input type="text" name="ipAddress" required />
     </div>
     <div>
-      <label>{{__ 'pair.manual_settings.fields.3.label'}}</label>
+      <label>Homey.__("pair.manual_settings.fields.3.label")</label>
       <input type="number" name="port" required value="6668" />
     </div>
-    <button type="submit">{{__ 'pair.manual_settings.submit'}}</button>
+    <button type="submit">Homey.__("pair.manual_settings.submit")</button>
   </form>
 </div>
