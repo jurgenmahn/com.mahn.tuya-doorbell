@@ -2,9 +2,9 @@
   "_comment": "This file is generated. Please edit .homeycompose/app.json instead.",
   "id": "com.mahn.tuya-doorbell",
   "version": "1.0.0",
-  "compose": true,
+  "compose": false,
   "sdk": 3,
-  "compatibility": ">=8.0.0",
+  "compatibility": ">=12.2.0",
   "platforms": [
     "local"
   ],
@@ -32,6 +32,15 @@
     "triggers": [
       {
         "title": {
+          "en": "Connection is lost"
+        },
+        "hint": {
+          "en": "Doorbell unreachable"
+        },
+        "id": "connection-is-lost"
+      },
+      {
+        "title": {
           "en": "Doorbell is pressed"
         },
         "tokens": [],
@@ -39,48 +48,55 @@
       },
       {
         "title": {
+          "en": "Montion alarm is triggered"
+        },
+        "hint": {
+          "en": "Motion detected"
+        },
+        "id": "montion-alarm-is-triggered"
+      },
+      {
+        "title": {
           "en": "Motion is detected"
         },
         "tokens": [],
         "id": "motion_detected"
+      },
+      {
+        "title": {
+          "en": "When the doorbell main button is pressed"
+        },
+        "hint": {
+          "en": "Someone is at the door"
+        },
+        "id": "when-the-doorbell-main-button-is-pressed"
       }
     ]
   },
   "drivers": [
     {
-      "id": "VideoDoorbell",
       "name": {
-        "en": "Video Doorbell"
+        "en": "tuyavideodoorbell"
       },
-      "class": "sensor",
-      "icon": "/drivers/VideoDoorbell/assets/icon.svg",
+      "class": "camera",
       "capabilities": [
         "button",
-        "alarm_motion"
+        "alarm_motion",
+        "alarm_problem",
+        "volume_down",
+        "volume_up"
       ],
-      "images": {
-        "small": "/drivers/VideoDoorbell/assets/images/small.png",
-        "large": "/drivers/VideoDoorbell/assets/images/large.png",
-        "xlarge": "/drivers/VideoDoorbell/assets/images/xlarge.png"
-      },
-      "capabilitiesOptions": {
-        "button": {
-          "title": {
-            "en": "Doorbell Button"
-          }
-        },
-        "alarm_motion": {
-          "title": {
-            "en": "Motion Detection"
-          }
-        }
-      },
       "platforms": [
         "local"
       ],
       "connectivity": [
         "lan"
       ],
+      "images": {
+        "small": "/drivers/tuyavideodoorbell/assets/images/small.png",
+        "large": "/drivers/tuyavideodoorbell/assets/images/large.png",
+        "xlarge": "/drivers/tuyavideodoorbell/assets/images/xlarge.png"
+      },
       "pair": [
         {
           "id": "start",
@@ -100,7 +116,8 @@
           "id": "list_devices",
           "template": "list_devices"
         }
-      ]
+      ],
+      "id": "tuyavideodoorbell"
     }
   ],
   "capabilities": {
@@ -127,6 +144,20 @@
       },
       "getable": true,
       "setable": true
+    }
+  },
+  "discovery": {
+    "wifi_doorbell": {
+      "type": "mac",
+      "mac": {
+        "manufacturer": [
+          [
+            180,
+            251,
+            227
+          ]
+        ]
+      }
     }
   }
 }
