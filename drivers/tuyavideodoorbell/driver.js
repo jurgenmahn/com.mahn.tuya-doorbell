@@ -1,34 +1,94 @@
-'use strict';
-
 const Homey = require('homey');
+const TuyAPI = require('tuyapi');
 
-module.exports = class MyDriver extends Homey.Driver {
-
-  /**
-   * onInit is called when the driver is initialized.
-   */
+class MyDriver extends Homey.Driver {
   async onInit() {
-    this.log('MyDriver has been initialized');
+    this.homey.app.log('Tuya Doorbell Driver initialized');
   }
 
-  /**
-   * onPairListDevices is called when a user is adding a device
-   * and the 'list_devices' view is called.
-   * This should return an array with the data of devices that are available for pairing.
-   */
-  async onPairListDevices() {
-    return [
-      // Example device data, note that `store` is optional
-      // {
-      //   name: 'My Device',
-      //   data: {
-      //     id: 'my-device',
-      //   },
-      //   store: {
-      //     address: '127.0.0.1',
-      //   },
-      // },
-    ];
+  async onPair(session) {
+    let pairingDevice = {};
+
+    session.setHandler('manual_settings', async (data) => {
+      this.homey.app.log('Received manual_settings data:', data);
+
+      pairingDevice = {
+        name: 'Tuya Doorbell',
+        data: {
+          id: data.deviceId
+        },
+        settings: {
+          deviceId: data.deviceId,
+          localKey: data.localKey,
+          ipAddress: data.ipAddress,
+          port: data.port || 6668
+        }
+      };
+
+      session.emit('list_devices', [pairingDevice]);
+    });
+
+    session.setHandler('list_devices', async () => {
+      return [pairingDevice];
+    });
   }
 
-};
+  async discoverDevices(session) {
+    try {
+      const devices = [];
+      const dgram = require('dgram');
+      const socket = dgram.createSocket('udp4');
+      
+      socket.on('error', (err) => {
+        this.log('Socket error:', err);
+        socket.close();
+      });
+
+      socket.on('listening', () => {
+        socket.setBroadcast(true);
+        const discoveryMessage = Buffer.from('{"t": "scan"}');
+        socket.send(discoveryMessage, 0, discoveryMessage.length, 6668, '255.255.255.255');
+      });
+      
+      socket.on('message', (msg, rinfo) => {
+        try {
+          const data = JSON.parse(msg.toString());
+          if (data.gwId) {
+            const device = {
+              name: 'Tuya Doorbell',
+              data: {
+                id: data.gwId
+              },
+              settings: {
+                deviceId: data.gwId,
+                ipAddress: rinfo.address,
+                port: 6668
+              }
+            };
+            if (!devices.find(d => d.data.id === device.data.id)) {
+              devices.push(device);
+              session.emit('list_devices', devices);
+            }
+          }
+        } catch (err) {
+          this.log('Error parsing device response:', err);
+        }
+      });
+
+      socket.bind();
+
+      // Close socket after 30 seconds
+      setTimeout(() => {
+        socket.close();
+        if (devices.length === 0) {
+          session.emit('list_devices', []);
+        }
+      }, 30000);
+    } catch (error) {
+      this.log('Discovery failed:', error);
+      session.emit('list_devices', []);
+    }
+  }
+}
+
+module.exports = MyDriver;
