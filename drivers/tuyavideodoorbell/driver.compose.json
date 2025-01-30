@@ -20,5 +20,25 @@
     "small": "{{driverAssetsPath}}/images/small.png",
     "large": "{{driverAssetsPath}}/images/large.png",
     "xlarge": "{{driverAssetsPath}}/images/xlarge.png"
-  }
+  },
+  "pair": [
+    {
+      "id": "start",
+      "template": "start",
+      "navigation": {
+        "next": "manual_settings"
+      }
+    },
+    {
+      "id": "manual_settings",
+      "template": "manual_settings",
+      "navigation": {
+        "next": "list_devices"
+      }
+    },
+    {
+      "id": "list_devices",
+      "template": "list_devices"
+    }
+  ]  
 }
