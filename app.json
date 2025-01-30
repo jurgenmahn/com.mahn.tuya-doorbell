@@ -121,6 +121,7 @@
         },
         {
           "id": "list_devices",
+          "template": "drivers/Tuyavideodoorbell/pair/list_devices.html",
           "title": {
             "en": "Select your doorbell"
           },
@@ -133,6 +134,7 @@
         },
         {
           "id": "manual_settings",
+          "template": "drivers/Tuyavideodoorbell/pair/manual_settings.html",
           "title": {
             "en": "Manual settings"
           },
