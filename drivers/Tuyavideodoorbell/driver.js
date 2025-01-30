@@ -7,30 +7,7 @@ class MyDriver extends Homey.Driver {
   }
 
   async onPair(session) {
-    let pairingDevice = {};
-
-    session.setHandler('manual_settings', async (data) => {
-      this.homey.app.log('Received manual_settings data:', data);
-
-      pairingDevice = {
-        name: 'Tuya Doorbell',
-        data: {
-          id: data.deviceId
-        },
-        settings: {
-          deviceId: data.deviceId,
-          localKey: data.localKey,
-          ipAddress: data.ipAddress,
-          port: data.port || 6668
-        }
-      };
-
-      session.emit('list_devices', [pairingDevice]);
-    });
-
-    session.setHandler('list_devices', async () => {
-      return [pairingDevice];
-    });
+ 
   }
 
   async discoverDevices(session) {

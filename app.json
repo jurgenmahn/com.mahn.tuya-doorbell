@@ -8,10 +8,10 @@
     "local"
   ],
   "name": {
-    "en": "Tuya doorbell local API"
+    "en": "Tuya doorbell via local API"
   },
   "description": {
-    "en": "connects the tuya doorbell to the homey by using the device api, so no cloud connection and a lot faster response"
+    "en": "connects the tuya doorbell to the homey by using the device api, so no cloud connection and a lot faster response, but you need to have your local id and key"
   },
   "category": [
     "security"
@@ -75,7 +75,7 @@
   "drivers": [
     {
       "name": {
-        "en": "tuyavideodoorbell"
+        "en": "Tuyavideodoorbell"
       },
       "class": "camera",
       "capabilities": [
@@ -92,31 +92,14 @@
         "lan"
       ],
       "images": {
-        "small": "/drivers/tuyavideodoorbell/assets/images/small.png",
-        "large": "/drivers/tuyavideodoorbell/assets/images/large.png",
-        "xlarge": "/drivers/tuyavideodoorbell/assets/images/xlarge.png"
+        "small": "/drivers/Tuyavideodoorbell/assets/images/small.png",
+        "large": "/drivers/Tuyavideodoorbell/assets/images/large.png",
+        "xlarge": "/drivers/Tuyavideodoorbell/assets/images/xlarge.png"
       },
       "pair": [
-        {
-          "id": "start",
-          "template": "start",
-          "navigation": {
-            "next": "manual_settings"
-          }
-        },
-        {
-          "id": "manual_settings",
-          "template": "manual_settings",
-          "navigation": {
-            "next": "list_devices"
-          }
-        },
-        {
-          "id": "list_devices",
-          "template": "list_devices"
-        }
+  
       ],
-      "id": "tuyavideodoorbell"
+      "id": "Tuyavideodoorbell"
     }
   ],
   "capabilities": {
