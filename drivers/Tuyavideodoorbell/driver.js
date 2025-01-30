@@ -7,7 +7,63 @@ class MyDriver extends Homey.Driver {
   }
 
   async onPair(session) {
- 
+    let pairingDevice = {};
+    
+    // Show the first menu view
+    session.setHandler('first', async () => {
+      return this.homey.__('pair.start.title');
+    });
+
+    // Handle manual settings input
+    session.setHandler('manual_settings', async (data) => {
+      this.homey.app.log('Received manual settings:', data);
+      
+      pairingDevice = {
+        name: 'Tuya Doorbell',
+        data: {
+          id: data.deviceId
+        },
+        settings: {
+          deviceId: data.deviceId,
+          localKey: data.localKey,
+          ipAddress: data.ipAddress,
+          port: data.port || 6668
+        }
+      };
+      
+      // Proceed to device validation
+      session.emit('list_devices', [pairingDevice]);
+    });
+
+    // Handle discovered devices list
+    session.setHandler('list_devices', async () => {
+      return [pairingDevice];
+    });
+
+    // Start discovery when entering automatic search
+    session.setHandler('search_auto', async () => {
+      await this.discoverDevices(session);
+    });
+
+    // Validate credentials before adding device
+    session.setHandler('validate', async (device) => {
+      try {
+        const testDevice = new TuyAPI({
+          id: device.settings.deviceId,
+          key: device.settings.localKey,
+          ip: device.settings.ipAddress,
+          port: device.settings.port,
+          version: '3.3'
+        });
+        
+        await testDevice.connect();
+        await testDevice.disconnect();
+        return true;
+      } catch (error) {
+        this.homey.app.log('Validation failed:', error);
+        throw new Error(this.homey.__('pair.validation_failed'));
+      }
+    });
   }
 
   async discoverDevices(session) {

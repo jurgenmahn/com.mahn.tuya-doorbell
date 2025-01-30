@@ -97,7 +97,80 @@
         "xlarge": "/drivers/Tuyavideodoorbell/assets/images/xlarge.png"
       },
       "pair": [
-  
+        {
+          "id": "start",
+          "menu": "first",
+          "title": {
+            "en": "Add Doorbell"
+          },
+          "items": [
+            {
+              "id": "search_auto",
+              "title": {
+                "en": "Search automatically"
+              }
+            },
+            {
+              "id": "manual_settings",
+              "title": {
+                "en": "Enter manually"
+              }
+            }
+          ]
+        },
+        {
+          "id": "list_devices",
+          "title": {
+            "en": "Select your doorbell"
+          },
+          "name": {
+            "en": "Doorbell devices"
+          },
+          "pagination": {
+            "items": 5
+          }
+        },
+        {
+          "id": "manual_settings",
+          "title": {
+            "en": "Manual settings"
+          },
+          "fields": [
+            {
+              "id": "deviceId",
+              "label": {
+                "en": "Device ID"
+              },
+              "type": "text",
+              "required": true
+            },
+            {
+              "id": "localKey",
+              "label": {
+                "en": "Local Key"
+              },
+              "type": "password",
+              "required": true
+            },
+            {
+              "id": "ipAddress",
+              "label": {
+                "en": "IP Address"
+              },
+              "type": "text",
+              "required": true
+            },
+            {
+              "id": "port",
+              "label": {
+                "en": "Port"
+              },
+              "type": "number",
+              "required": true,
+              "defaultValue": 6668
+            }
+          ]
+        }
       ],
       "id": "Tuyavideodoorbell"
     }
