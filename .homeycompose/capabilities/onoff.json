@@ -1,8 +1,0 @@
-{
-  "type": "boolean",
-  "title": {
-    "en": "On/Off"
-  },
-  "getable": true,
-  "setable": true
-}

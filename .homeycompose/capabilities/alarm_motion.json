@@ -1,8 +1,0 @@
-{
-  "type": "boolean",
-  "title": {
-    "en": "Motion Alarm"
-  },
-  "getable": true,
-  "setable": false
-}

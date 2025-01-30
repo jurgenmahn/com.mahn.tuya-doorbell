@@ -1,8 +1,0 @@
-{
-  "type": "boolean",
-  "title": {
-    "en": "Button"
-  },
-  "getable": true,
-  "setable": false
-}
