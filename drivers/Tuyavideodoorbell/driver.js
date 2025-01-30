@@ -9,10 +9,8 @@ class MyDriver extends Homey.Driver {
   async onPair(session) {
     let pairingDevice = {};
     
-    // Show the first menu view
-    session.setHandler('first', async () => {
-      return this.homey.__('pair.start.title');
-    });
+    // Show the first view
+    session.showView('start');
 
     // Handle manual settings input
     session.setHandler('manual_settings', async (data) => {
