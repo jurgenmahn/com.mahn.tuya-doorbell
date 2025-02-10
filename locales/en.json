@@ -14,7 +14,22 @@
     },
     "manual_settings": {
       "title": "Enter Device Information",
-      "instructions": "Please enter the required device details."
+      "instructions": "Please enter the required device details.",
+      "fields": [
+        {
+          "label": "Device ID"
+        },
+        {
+          "label": "Local Key"
+        },
+        {
+          "label": "IP Address"
+        },
+        {
+          "label": "Port"
+        }
+      ],
+      "submit": "Add Device"
     },
     "list_devices": {
       "title": "Select Your Doorbell",
