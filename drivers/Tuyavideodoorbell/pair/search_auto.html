@@ -1,0 +1,32 @@
+<!-- Device Discovery Screen -->
+<div class="container">
+  <div id="searching">
+    <h2 data-i18n="pair.discovery.searching"></h2>
+    <div class="spinner"></div>
+    <p data-i18n="pair.discovery.instructions"></p>
+  </div>
+
+  <div id="found" style="display: none;">
+    <h2><span id="device-count">0</span> <span data-i18n="pair.discovery.found"></span></h2>
+  </div>
+</div>
+
+<script>
+  Homey.showLoadingOverlay();
+  
+  Homey.emit('search_devices').then(devices => {
+    Homey.hideLoadingOverlay();
+    document.getElementById('searching').style.display = 'none';
+    document.getElementById('found').style.display = 'block';
+    document.getElementById('device-count').textContent = devices.length;
+    
+    if (devices.length > 0) {
+      setTimeout(() => {
+        Homey.showView('list_devices');
+      }, 2000);
+    }
+  }).catch(error => {
+    Homey.hideLoadingOverlay();
+    Homey.alert(Homey.__('errors.discovery_failed'));
+  });
+</script>
