@@ -1,18 +1,18 @@
 <!-- Empty template required by Homey pairing flow -->
 <!-- List Discovered Devices -->
 <div class="container">
-  <h2>Homey.__("pair.list_devices.title")</h2>
+  <h2 data-i18n="pair.list_devices.title"></h2>
   {{#if devices.length}}
   <ul>
     {{#each devices}}
     <li>
       <h3>{{name}}</h3>
       <p>ID: {{data.id}}</p>
-      <button data-device="{{id}}">Homey.__("pair.list_devices.select")</button>
+      <button data-device="{{id}}" data-i18n="pair.list_devices.select"></button>
     </li>
     {{/each}}
   </ul>
   {{else}}
-  <p>Homey.__("pair.list_devices.no_devices_found")</p>
+  <p data-i18n="pair.list_devices.no_devices_found"></p>
   {{/if}}
 </div>
