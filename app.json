@@ -8,10 +8,32 @@
     "local"
   ],
   "name": {
-    "en": "Tuya doorbell via local API"
+    "en": "Tuya doorbell via local API",
+    "nl": "Tuya-deurbel via lokale API",
+    "da": "Tuya dørklokke via lokal API",
+    "de": "Tuya-Türklingel über lokale API",
+    "es": "Timbre Tuya a través de API local",
+    "fr": "Sonnette Tuya via API locale",
+    "it": "Campanello Tuya tramite API locale",
+    "no": "Tuya ringeklokke via lokal API",
+    "sv": "Tuya dörrklocka via lokal API",
+    "pl": "Dzwonek Tuya przez lokalne API",
+    "ru": "Дверной звонок Tuya через локальное API",
+    "ko": "로컬 API를 통한 Tuya 인터폰"
   },
   "description": {
-    "en": "connects the tuya doorbell to the homey by using the device api, so no cloud connection and a lot faster response, but you need to have your local id and key"
+    "en": "connects the tuya doorbell to the homey by using the device api, so no cloud connection and a lot faster response, but you need to have your local id and key",
+    "nl": "verbindt de tuya-deurbel met de homey via de apparaat-api, dus geen cloudverbinding en een veel snellere respons, maar je moet je lokale id en sleutel hebben",
+    "da": "forbinder tuya dørklokken til homey ved hjælp af enhedens api, så ingen skyforbindelse og en meget hurtigere respons, men du skal have din lokale id og nøgle",
+    "de": "verbindet die Tuya-Türklingel mit dem Homey über die Geräte-API, also keine Cloud-Verbindung und deutlich schnellere Reaktionszeiten, aber du benötigst deine lokale ID und deinen Schlüssel",
+    "es": "conecta el timbre Tuya al homey usando la API del dispositivo, por lo que no hay conexión a la nube y la respuesta es mucho más rápida, pero necesitas tener tu ID y clave local",
+    "fr": "connecte la sonnette Tuya à la maison en utilisant l'API de l'appareil, donc pas de connexion cloud et une réponse beaucoup plus rapide, mais vous devez avoir votre ID et clé locaux",
+    "it": "collega il campanello Tuya all'homey utilizzando l'API del dispositivo, quindi senza connessione cloud e con risposta molto più rapida, ma è necessario avere l'ID e la chiave locali",
+    "no": "kobler Tuya ringeklokken til homey ved hjelp av enhetens api, så ingen skytilkobling og mye raskere respons, men du må ha din lokale ID og nøkkel",
+    "sv": "ansluter tuya-dörrklockan till homey via enhetens api, så ingen molnanslutning och mycket snabbare respons, men du måste ha ditt lokala id och nyckel",
+    "pl": "łączy dzwonek Tuya z systemem homey za pomocą api urządzenia, więc nie ma połączenia z chmurą i znacznie szybsza odpowiedź, ale potrzebujesz swojego lokalnego ID i klucza",
+    "ru": "подключает дверной звонок Tuya к homey через API устройства, поэтому нет облачного подключения и намного быстрее отклик, но вам нужно иметь ваш локальный ID и ключ",
+    "ko": "장치 API를 사용하여 Tuya 인터폰을 홈이에 연결합니다. 따라서 클라우드 연결 없이 훨씬 빠른 응답이 가능합니다. 단, 로컬 ID와 키가 필요합니다."
   },
   "category": [
     "security"
@@ -31,42 +53,130 @@
     "triggers": [
       {
         "title": {
-          "en": "Connection is lost"
+          "en": "Connection is lost",
+          "nl": "Verbinding is verbroken",
+          "da": "Forbindelsen er tabt",
+          "de": "Verbindung ist verloren",
+          "es": "Conexión perdida",
+          "fr": "Connexion perdue",
+          "it": "Connessione persa",
+          "no": "Tilkoblingen er mistet",
+          "sv": "Anslutningen är förlorad",
+          "pl": "Połączenie zostało utracone",
+          "ru": "Соединение потеряно",
+          "ko": "연결이 끊어졌습니다"
         },
         "hint": {
-          "en": "Doorbell unreachable"
+          "en": "Doorbell unreachable",
+          "nl": "Deurbel onbereikbaar",
+          "da": "Dørklokken er utilgængelig",
+          "de": "Türklingel nicht erreichbar",
+          "es": "Timbre inalcanzable",
+          "fr": "Sonnette injoignable",
+          "it": "Campanello irraggiungibile",
+          "no": "Ringeklokken er utilgjengelig",
+          "sv": "Dörrklockan är oåtkomlig",
+          "pl": "Dzwonek nieosiągalny",
+          "ru": "Дверной звонок недоступен",
+          "ko": "인터폰에 접근할 수 없습니다"
         },
         "id": "connection-is-lost"
       },
       {
         "title": {
-          "en": "Doorbell is pressed"
+          "en": "Doorbell is pressed",
+          "nl": "Deurbel is ingedrukt",
+          "da": "Dørklokken er trykket",
+          "de": "Türklingel wurde gedrückt",
+          "es": "El timbre ha sido presionado",
+          "fr": "La sonnette est pressée",
+          "it": "Il campanello è stato premuto",
+          "no": "Ringeklokken er trykket på",
+          "sv": "Dörrklockan är tryckt",
+          "pl": "Dzwonek został naciśnięty",
+          "ru": "Дверной звонок нажат",
+          "ko": "인터폰 버튼이 눌렸습니다"
         },
         "tokens": [],
         "id": "doorbell_pressed"
       },
       {
         "title": {
-          "en": "Montion alarm is triggered"
+          "en": "Montion alarm is triggered",
+          "nl": "Bewegingsalarm is geactiveerd",
+          "da": "Bevægelsesalarm er udløst",
+          "de": "Bewegungsalarm wird ausgelöst",
+          "es": "Alarma de movimiento activada",
+          "fr": "Alarme de mouvement déclenchée",
+          "it": "Allarme movimento attivato",
+          "no": "Bevegelsesalarm er utløst",
+          "sv": "Rörelsealarm är utlösta",
+          "pl": "Alarm ruchu został uruchomiony",
+          "ru": "Сработала сигнализация движения",
+          "ko": "동작 경보가 발생했습니다"
         },
         "hint": {
-          "en": "Motion detected"
+          "en": "Motion detected",
+          "nl": "Beweging gedetecteerd",
+          "da": "Bevægelse registreret",
+          "de": "Bewegung erkannt",
+          "es": "Movimiento detectado",
+          "fr": "Mouvement détecté",
+          "it": "Movimento rilevato",
+          "no": "Bevegelse oppdaget",
+          "sv": "Rörelse upptäckt",
+          "pl": "Wykryto ruch",
+          "ru": "Обнаружено движение",
+          "ko": "움직임이 감지되었습니다"
         },
         "id": "montion-alarm-is-triggered"
       },
       {
         "title": {
-          "en": "Motion is detected"
+          "en": "Motion is detected",
+          "nl": "Beweging is gedetecteerd",
+          "da": "Bevægelse er registreret",
+          "de": "Bewegung erkannt",
+          "es": "Movimiento detectado",
+          "fr": "Mouvement détecté",
+          "it": "Movimento rilevato",
+          "no": "Bevegelse oppdaget",
+          "sv": "Rörelse upptäckt",
+          "pl": "Wykryto ruch",
+          "ru": "Обнаружено движение",
+          "ko": "움직임이 감지되었습니다"
         },
         "tokens": [],
         "id": "motion_detected"
       },
       {
         "title": {
-          "en": "When the doorbell main button is pressed"
+          "en": "When the doorbell main button is pressed",
+          "nl": "Wanneer de hoofdkop van de deurbel is ingedrukt",
+          "da": "Når dørklokkens hovedknap er trykket",
+          "de": "Wenn die Haupttaste der Türklingel gedrückt wird",
+          "es": "Cuando se presiona el botón principal del timbre",
+          "fr": "Lorsque le bouton principal de la sonnette est pressé",
+          "it": "Quando viene premuto il pulsante principale del campanello",
+          "no": "Når ringeklokkens hovedknapp trykkes",
+          "sv": "När dörrklockans huvudknapp trycks",
+          "pl": "Gdy naciśnięty jest główny przycisk dzwonka",
+          "ru": "Когда нажимают на главную кнопку дверного звонка",
+          "ko": "동작에서 인터폰 메인 버튼이 눌렸을 때"
         },
         "hint": {
-          "en": "Someone is at the door"
+          "en": "Someone is at the door",
+          "nl": "Iemand staat aan de deur",
+          "da": "Nogen er ved døren",
+          "de": "Jemand ist an der Tür",
+          "es": "Alguien está en la puerta",
+          "fr": "Quelqu'un est à la porte",
+          "it": "Qualcuno è alla porta",
+          "no": "Noen er ved døren",
+          "sv": "Någon är vid dörren",
+          "pl": "Ktoś jest przy drzwiach",
+          "ru": "Кто-то у двери",
+          "ko": "누군가가 문 앞에 있습니다"
         },
         "id": "when-the-doorbell-main-button-is-pressed"
       }
@@ -75,7 +185,18 @@
   "drivers": [
     {
       "name": {
-        "en": "Tuyavideodoorbell"
+        "en": "Tuyavideodoorbell",
+        "nl": "Tuyavideodeurbel",
+        "da": "Tuyavideo dørklokke",
+        "de": "Tuyavideo Türklingel",
+        "es": "Timbre de video Tuya",
+        "fr": "Sonnette vidéo Tuya",
+        "it": "Videocampanello Tuya",
+        "no": "Tuyavideo ringeklokke",
+        "sv": "Tuyavideo dörrklocka",
+        "pl": "Wideodomofon Tuya",
+        "ru": "Видеодомофон Tuya",
+        "ko": "Tuya 비디오 인터폰"
       },
       "class": "camera",
       "capabilities": [
@@ -100,33 +221,86 @@
         {
           "id": "start",
           "menu": "first",
-          "template": "drivers/Tuyavideodoorbell/pair/start.html",
           "title": {
-            "en": "Add Doorbell"
+            "en": "Add Doorbell",
+            "nl": "Deurbel toevoegen",
+            "da": "Tilføj dørklokke",
+            "de": "Türklingel hinzufügen",
+            "es": "Agregar timbre",
+            "fr": "Ajouter une sonnette",
+            "it": "Aggiungi campanello",
+            "no": "Legg til ringeklokke",
+            "sv": "Lägg till dörrklocka",
+            "pl": "Dodaj dzwonek",
+            "ru": "Добавить дверной звонок",
+            "ko": "인터폰 추가"
           },
           "items": [
             {
               "id": "search_auto",
               "title": {
-                "en": "Search automatically"
+                "en": "Search automatically",
+                "nl": "Automatisch zoeken",
+                "da": "Søg automatisk",
+                "de": "Automatisch suchen",
+                "es": "Buscar automáticamente",
+                "fr": "Rechercher automatiquement",
+                "it": "Cerca automaticamente",
+                "no": "Søk automatisk",
+                "sv": "Sök automatiskt",
+                "pl": "Szukaj automatycznie",
+                "ru": "Поиск автоматически",
+                "ko": "자동 검색"
               }
             },
             {
               "id": "manual_settings",
               "title": {
-                "en": "Enter manually"
+                "en": "Enter manually",
+                "nl": "Handmatig invoeren",
+                "da": "Indtast manuelt",
+                "de": "Manuell eingeben",
+                "es": "Ingresar manualmente",
+                "fr": "Entrer manuellement",
+                "it": "Inserisci manualmente",
+                "no": "Skriv inn manuelt",
+                "sv": "Ange manuellt",
+                "pl": "Wprowadź ręcznie",
+                "ru": "Ввод вручную",
+                "ko": "수동으로 입력"
               }
             }
           ]
         },
         {
           "id": "list_devices",
-          "template": "drivers/Tuyavideodoorbell/pair/list_devices.html",
           "title": {
-            "en": "Select your doorbell"
+            "en": "Select your doorbell",
+            "nl": "Selecteer je deurbel",
+            "da": "Vælg din dørklokke",
+            "de": "Wähle deine Türklingel aus",
+            "es": "Selecciona tu timbre",
+            "fr": "Sélectionnez votre sonnette",
+            "it": "Seleziona il tuo campanello",
+            "no": "Velg ringeklokken din",
+            "sv": "Välj din dörrklocka",
+            "pl": "Wybierz swój dzwonek",
+            "ru": "Выберите свой дверной звонок",
+            "ko": "인터폰을 선택하세요"
           },
           "name": {
-            "en": "Doorbell devices"
+            "en": "Doorbell devices",
+            "nl": "Deurbel apparaten",
+            "da": "Dørklokkeenheder",
+            "de": "Türklingelgeräte",
+            "es": "Dispositivos de timbre",
+            "fr": "Appareils de sonnette",
+            "it": "Dispositivi campanello",
+            "no": "Ringeklokkenheter",
+            "sv": "Dörrklockanheter",
+            "pl": "Urządzenia dzwonkowe",
+            "ru": "Устройства дверного звонка",
+            "ko": "인터폰 장치"
           },
           "pagination": {
             "items": 5
@@ -134,15 +308,36 @@
         },
         {
           "id": "manual_settings",
-          "template": "drivers/Tuyavideodoorbell/pair/manual_settings.html",
           "title": {
-            "en": "Manual settings"
+            "en": "Manual settings",
+            "nl": "Handmatige instellingen",
+            "da": "Manuelle indstillinger",
+            "de": "Manuelle Einstellungen",
+            "es": "Configuración manual",
+            "fr": "Paramètres manuels",
+            "it": "Impostazioni manuali",
+            "no": "Manuelle innstillinger",
+            "sv": "Manuella inställningar",
+            "pl": "Ustawienia ręczne",
+            "ru": "Ручные настройки",
+            "ko": "수동 설정"
           },
           "fields": [
             {
               "id": "deviceId",
               "label": {
-                "en": "Device ID"
+                "en": "Device ID",
+                "nl": "Apparaat ID",
+                "da": "Enhedens ID",
+                "de": "Geräte-ID",
+                "es": "ID de dispositivo",
+                "fr": "ID de l'appareil",
+                "it": "ID dispositivo",
+                "no": "Enhets-ID",
+                "sv": "Enhets-ID",
+                "pl": "ID urządzenia",
+                "ru": "ID устройства",
+                "ko": "장치 ID"
               },
               "type": "text",
               "required": true
@@ -150,7 +345,18 @@
             {
               "id": "localKey",
               "label": {
-                "en": "Local Key"
+                "en": "Local Key",
+                "nl": "Lokale sleutel",
+                "da": "Lokal nøgle",
+                "de": "Lokaler Schlüssel",
+                "es": "Clave local",
+                "fr": "Clé locale",
+                "it": "Chiave locale",
+                "no": "Lokal nøkkel",
+                "sv": "Lokal nyckel",
+                "pl": "Klucz lokalny",
+                "ru": "Локальный ключ",
+                "ko": "로컬 키"
               },
               "type": "password",
               "required": true
@@ -158,7 +364,18 @@
             {
               "id": "ipAddress",
               "label": {
-                "en": "IP Address"
+                "en": "IP Address",
+                "nl": "IP-adres",
+                "da": "IP-adresse",
+                "de": "IP-Adresse",
+                "es": "Dirección IP",
+                "fr": "Adresse IP",
+                "it": "Indirizzo IP",
+                "no": "IP-adresse",
+                "sv": "IP-adress",
+                "pl": "Adres IP",
+                "ru": "IP-адрес",
+                "ko": "IP 주소"
               },
               "type": "text",
               "required": true
@@ -166,7 +383,18 @@
             {
               "id": "port",
               "label": {
-                "en": "Port"
+                "en": "Port",
+                "nl": "Poort",
+                "da": "Port",
+                "de": "Port",
+                "es": "Puerto",
+                "fr": "Port",
+                "it": "Porta",
+                "no": "Port",
+                "sv": "Port",
+                "pl": "Port",
+                "ru": "Порт",
+                "ko": "포트"
               },
               "type": "number",
               "required": true,
@@ -182,7 +410,18 @@
     "alarm_motion": {
       "type": "boolean",
       "title": {
-        "en": "Motion Alarm"
+        "en": "Motion Alarm",
+        "nl": "Bewegingsalarm",
+        "da": "Bevægelsesalarm",
+        "de": "Bewegungsalarm",
+        "es": "Alarma de movimiento",
+        "fr": "Alarme de mouvement",
+        "it": "Allarme movimento",
+        "no": "Bevegelsesalarm",
+        "sv": "Rörelsealarm",
+        "pl": "Alarm ruchu",
+        "ru": "Сигнализация движения",
+        "ko": "동작 경보"
       },
       "getable": true,
       "setable": false
@@ -190,7 +429,18 @@
     "button": {
       "type": "boolean",
       "title": {
-        "en": "Button"
+        "en": "Button",
+        "nl": "Knop",
+        "da": "Knap",
+        "de": "Knopf",
+        "es": "Botón",
+        "fr": "Bouton",
+        "it": "Pulsante",
+        "no": "Knapp",
+        "sv": "Knapp",
+        "pl": "Przycisk",
+        "ru": "Кнопка",
+        "ko": "버튼"
       },
       "getable": true,
       "setable": false
@@ -198,7 +448,18 @@
     "onoff": {
       "type": "boolean",
       "title": {
-        "en": "On/Off"
+        "en": "On/Off",
+        "nl": "Aan/Uit",
+        "da": "Tænd/Sluk",
+        "de": "Ein/Aus",
+        "es": "Encendido/Apagado",
+        "fr": "Allumer/Éteindre",
+        "it": "Acceso/Spento",
+        "no": "På/Av",
+        "sv": "På/Av",
+        "pl": "Włącz/Wyłącz",
+        "ru": "Вкл/Выкл",
+        "ko": "켜기/끄기"
       },
       "getable": true,
       "setable": true
