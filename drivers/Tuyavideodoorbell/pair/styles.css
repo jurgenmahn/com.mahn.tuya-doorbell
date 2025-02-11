@@ -79,6 +79,23 @@ li {
   border-radius: 8px;
 }
 
+.device-info {
+  margin-bottom: 15px;
+}
+
+.device-name {
+  font-size: 18px;
+  font-weight: 500;
+  color: #333;
+  margin-bottom: 8px;
+}
+
+.device-details {
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 4px;
+}
+
 .spinner {
   border: 4px solid #f3f3f3;
   border-top: 4px solid #0066cc;

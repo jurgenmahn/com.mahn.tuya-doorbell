@@ -19,9 +19,11 @@
         const deviceData = JSON.stringify(device).replace(/'/g, "&#39;");
         console.log(device);
         li.innerHTML = `
-          <h3>${device.name || 'Tuya Doorbell'}</h3>
-          <p>ID: ${device.data?.id || device.settings?.deviceId || 'Unknown'}</p>
-          <p>IP: ${device.settings?.ipAddress || 'Unknown'}</p>
+          <div class="device-info">
+            <div class="device-name">${device.name || 'Tuya Doorbell'}</div>
+            <div class="device-details">ID: ${device.data?.id || device.settings?.deviceId || 'Unknown'}</div>
+            <div class="device-details">IP: ${device.settings?.ipAddress || 'Unknown'}</div>
+          </div>
           <button class="homey-button-primary" onclick='Homey.emit("add_device", ${deviceData}).then(() => { Homey.done(); }).catch((err) => { Homey.alert(err.message || "Failed to add device"); })'>Add Device</button>
         `;
         ul.appendChild(li);
