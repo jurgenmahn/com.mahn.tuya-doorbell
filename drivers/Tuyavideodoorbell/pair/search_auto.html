@@ -1,34 +1,50 @@
 <!-- Device Discovery Screen -->
 <div class="container">
-  <div id="searching">
-    <h2 data-i18n="pair.discovery.searching"></h2>
-    <div class="spinner"></div>
-    <p data-i18n="pair.discovery.instructions"></p>
-  </div>
+  <h2 data-i18n="pair.discovery.title"></h2>
+  <p data-i18n="pair.discovery.instructions"></p>
+  
+  <form id="discovery-form">
+    <div class="form-group">
+      <label data-i18n="pair.manual_settings.fields.0.label"></label>
+      <input type="text" name="deviceId" required />
+    </div>
+    <div class="form-group">
+      <label data-i18n="pair.manual_settings.fields.1.label"></label>
+      <input type="password" name="localKey" required />
+    </div>
+    <button type="submit" class="button" data-i18n="pair.discovery.start_scan"></button>
+  </form>
 
-  <div id="found" style="display: none;">
-    <h2><span id="device-count">0</span> <span data-i18n="pair.discovery.found"></span></h2>
+  <div id="searching" style="display: none;">
+    <div class="spinner"></div>
+    <p data-i18n="pair.discovery.scanning"></p>
   </div>
 </div>
 
 <script>
-  Homey.showLoadingOverlay();
-  
-  Homey.emit('search_auto').then(devices => {
-    Homey.hideLoadingOverlay();
-    document.getElementById('searching').style.display = 'none';
-    document.getElementById('found').style.display = 'block';
-    document.getElementById('device-count').textContent = devices.length;
-    
-    console.log(devices)
-    if (devices && devices.length > 0) {
-      setTimeout(() => {
+  document.getElementById('discovery-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const formData = new FormData(e.target);
+    const data = {
+      deviceId: formData.get('deviceId'),
+      localKey: formData.get('localKey')
+    };
+
+    document.getElementById('discovery-form').style.display = 'none';
+    document.getElementById('searching').style.display = 'block';
+    Homey.showLoadingOverlay();
+
+    try {
+      const devices = await Homey.emit('search_auto', data);
+      if (devices && devices.length > 0) {
         Homey.showView('list_devices');
-      }, 2000);
+      } else {
+        Homey.showView('no_devices');
+      }
+    } catch (error) {
+      Homey.hideLoadingOverlay();
+      Homey.alert(Homey.__('errors.discovery_failed'));
+      console.error(error);
     }
-  }).catch(error => {
-    Homey.hideLoadingOverlay();
-    Homey.alert(Homey.__('errors.discovery_failed'));
-    console.log(error);
   });
 </script>

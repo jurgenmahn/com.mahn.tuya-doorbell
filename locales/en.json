@@ -36,9 +36,10 @@
       "instructions": "Tap your doorbell to add it to Homey."
     },
     "discovery": {
-      "searching": "Searching for devices...",
-      "found": "Discovered %d devices",
-      "instructions": "Make sure your doorbell is in pairing mode"
+      "title": "Enter Device Information",
+      "instructions": "Enter your Tuya device ID and local key to start scanning",
+      "scanning": "Scanning network for your device...",
+      "start_scan": "Start Scan"
     },
     "no_devices": {
       "title": "No devices found",

@@ -41,10 +41,36 @@ class MyDriver extends Homey.Driver {
     });
 
     // Start discovery when entering automatic search
-    session.setHandler('search_auto', async () => {
-      const discoveryResult = await this.discoverDevices(session);
-      console.log("Discovery done");
-      return discoveryResult;
+    session.setHandler('search_auto', async (data) => {
+      console.log("Starting discovery with credentials:", { deviceId: data.deviceId, key: '[hidden]' });
+      try {
+        const device = new TuyAPI({
+          id: data.deviceId,
+          key: data.localKey,
+          version: '3.3'
+        });
+
+        await device.find();
+        console.log("Device found:", device.device);
+
+        const discoveredDevice = {
+          name: 'Tuya Doorbell',
+          data: {
+            id: data.deviceId
+          },
+          settings: {
+            deviceId: data.deviceId,
+            localKey: data.localKey,
+            ipAddress: device.device.ip,
+            port: 6668
+          }
+        };
+
+        return [discoveredDevice];
+      } catch (error) {
+        console.error("Discovery failed:", error);
+        return [];
+      }
     });
 
     // Validate credentials before adding device
