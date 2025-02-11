@@ -65,13 +65,24 @@ class MyDriver extends Homey.Driver {
             await device.connect();
             console.log(`Successfully connected to device at ${ip}`);
             
-            // Get device info with timeout
-            const status = await Promise.race([
-              device.get({schema: true}),
-              new Promise((_, reject) => 
-                setTimeout(() => reject(new Error('Device info timeout')), 5000)
-              )
-            ]);
+            // Get device info with increased timeout and retries
+            let status;
+            for (let attempt = 1; attempt <= 3; attempt++) {
+              try {
+                console.log(`Attempt ${attempt} to get device info...`);
+                status = await Promise.race([
+                  device.get({schema: true}),
+                  new Promise((_, reject) => 
+                    setTimeout(() => reject(new Error('Device info timeout')), 15000)
+                  )
+                ]);
+                break; // If successful, exit the retry loop
+              } catch (err) {
+                if (attempt === 3) throw err; // Rethrow on final attempt
+                console.log(`Attempt ${attempt} failed, retrying...`);
+                await new Promise(resolve => setTimeout(resolve, 1000)); // Wait 1s between retries
+              }
+            }
             console.log(`Got device status:`, status);
 
             // Verify this is the correct device by checking the device ID
