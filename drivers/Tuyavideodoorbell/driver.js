@@ -165,7 +165,6 @@ class MyDriver extends Homey.Driver {
       }
     });
 
-    });
   }
 
   // Validate credentials before adding device
