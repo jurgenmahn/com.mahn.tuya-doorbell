@@ -78,15 +78,13 @@ class MyDriver extends Homey.Driver {
             if (status && status.dps && (status.dps['101'] !== undefined || status.dps['103'] !== undefined)) {
               console.log('Found matching doorbell device');
               
-              // Get MAC address
-              const mac = await this.getMacFromDevice(device);
-              console.log('Device MAC:', mac);
-              
-              await device.disconnect();
-              console.log(`Disconnected from device at ${ip}`);
-
-              // Store the discovered device and return immediately
-            const discoveredDevice = {
+              try {
+                // Get MAC address
+                const mac = await this.getMacFromDevice(device);
+                console.log('Device MAC:', mac);
+                
+                // Store the discovered device and return immediately
+                const discoveredDevice = {
               name: 'Tuya Doorbell',
               data: {
                 id: data.deviceId
@@ -102,8 +100,21 @@ class MyDriver extends Homey.Driver {
               }
             };
 
-            pairingDevice = discoveredDevice;
-            return [discoveredDevice]; // This will resolve the promise
+                pairingDevice = discoveredDevice;
+                return [discoveredDevice]; // This will resolve the promise
+              } finally {
+                // Ensure device is disconnected
+                try {
+                  await device.disconnect();
+                  console.log(`Disconnected from device at ${ip}`);
+                } catch (disconnectErr) {
+                  console.log(`Error during disconnect:`, disconnectErr.message);
+                }
+              }
+            }
+            // Not a matching device, disconnect and continue
+            await device.disconnect();
+            console.log(`Not a matching device at ${ip}, continuing search...`);
           } catch (err) {
             console.log(`Failed to connect to ${ip}:`, err.message);
             try {
@@ -147,13 +158,17 @@ class MyDriver extends Homey.Driver {
   async scanNetwork() {
     const foundIPs = [];
     const baseAddr = '192.168.113';
-    const scanPromises = [];
+    const BATCH_SIZE = 10;
     let scannedCount = 0;
 
     console.log("Starting port scan on network:", baseAddr);
 
-    // Scan in smaller batches to avoid overwhelming the network
-    for (let i = 1; i < 255; i++) {
+    // Scan in batches to avoid overwhelming the network
+    for (let start = 1; start < 255; start += BATCH_SIZE) {
+      const end = Math.min(start + BATCH_SIZE, 255);
+      const batchPromises = [];
+      
+      for (let i = start; i < end; i++) {
       const ip = `${baseAddr}.${i}`;
       scanPromises.push(
         new Promise((resolve) => {
@@ -182,7 +197,10 @@ class MyDriver extends Homey.Driver {
       );
     }
 
-    await Promise.all(scanPromises);
+      await Promise.all(batchPromises);
+      scannedCount += BATCH_SIZE;
+      console.log(`Scanned ${scannedCount}/254 addresses...`);
+    }
     console.log(`Found ${foundIPs.length} devices listening on port 6668`);
     return foundIPs;
   }
