@@ -73,7 +73,10 @@ class MyDriver extends Homey.Driver {
                 deviceId: data.deviceId,
                 localKey: data.localKey,
                 ipAddress: ip,
-                port: 6668
+                port: 6668,
+                gwID: device.gwID,
+                productKey: device.productKey
+                // can you get the macaddress of the device here, so we can find it back if the ip changes later? AI!
               }
             };
 
