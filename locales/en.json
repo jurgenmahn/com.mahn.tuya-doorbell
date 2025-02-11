@@ -64,6 +64,7 @@
   },
   "errors": {
     "discovery_failed": "Device discovery failed. Please check network settings.",
-    "invalid_credentials": "Invalid device credentials"
+    "invalid_credentials": "Invalid device credentials",
+    "no_devices_found": "No devices found on your network. Please check if the device is powered on and connected."
   }
 }

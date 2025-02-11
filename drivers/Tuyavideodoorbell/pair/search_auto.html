@@ -36,11 +36,20 @@
 
     try {
       const devices = await Homey.emit('search_auto', data);
-      Homey.showView('list_devices');
+      if (devices && devices.length > 0) {
+        Homey.showView('list_devices');
+      } else {
+        Homey.hideLoadingOverlay();
+        document.getElementById('searching').style.display = 'none';
+        document.getElementById('discovery-form').style.display = 'block';
+        Homey.alert(Homey.__('errors.no_devices_found'));
+      }
     } catch (error) {
       Homey.hideLoadingOverlay();
-      Homey.alert(Homey.__('errors.discovery_failed'));
-      console.error(error);
+      document.getElementById('searching').style.display = 'none';
+      document.getElementById('discovery-form').style.display = 'block';
+      Homey.alert(error.message || Homey.__('errors.discovery_failed'));
+      console.error('Discovery error:', error);
     }
   });
 </script>
