@@ -14,13 +14,14 @@
 <script>
   Homey.showLoadingOverlay();
   
-  Homey.emit('search_devices').then(devices => {
+  Homey.emit('search_auto').then(devices => {
     Homey.hideLoadingOverlay();
     document.getElementById('searching').style.display = 'none';
     document.getElementById('found').style.display = 'block';
     document.getElementById('device-count').textContent = devices.length;
     
-    if (devices.length > 0) {
+    console.log(devices)
+    if (devices && devices.length > 0) {
       setTimeout(() => {
         Homey.showView('list_devices');
       }, 2000);
@@ -28,5 +29,6 @@
   }).catch(error => {
     Homey.hideLoadingOverlay();
     Homey.alert(Homey.__('errors.discovery_failed'));
+    console.log(error);
   });
 </script>
