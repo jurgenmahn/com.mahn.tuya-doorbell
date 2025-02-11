@@ -15,9 +15,10 @@
       devices.forEach(device => {
         const li = document.createElement('li');
         li.innerHTML = `
-          <h3>${device.name}</h3>
-          <p>ID: ${device.data.id}</p>
-          <button class="button" onclick="Homey.emit('add_device', ${JSON.stringify(device)})" data-i18n="pair.list_devices.select"></button>
+          <h3>${device.name || 'Tuya Doorbell'}</h3>
+          <p>ID: ${device.settings?.deviceId || 'Unknown'}</p>
+          <p>IP: ${device.settings?.ipAddress || 'Unknown'}</p>
+          <button class="button" onclick="Homey.emit('add_device', ${JSON.stringify(device)})" data-i18n="pair.manual_settings.submit"></button>
         `;
         ul.appendChild(li);
       });
