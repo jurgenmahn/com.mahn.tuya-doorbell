@@ -75,8 +75,8 @@ class MyDriver extends Homey.Driver {
                 ipAddress: ip,
                 port: 6668,
                 gwID: device.gwID,
-                productKey: device.productKey
-                // can you get the macaddress of the device here, so we can find it back if the ip changes later? AI!
+                productKey: device.productKey,
+                mac: device.mac || await this.getMacFromDevice(device)
               }
             };
 
@@ -157,6 +157,21 @@ class MyDriver extends Homey.Driver {
       console.log(`Found ${foundIPs.length} devices listening on port 6668`);
       resolve(foundIPs);
     });
+  }
+
+  async getMacFromDevice(device) {
+    try {
+      const status = await device.get();
+      if (status && status.mac) {
+        return status.mac;
+      }
+      // Try to get MAC from device info
+      const info = await device.get({schema: true});
+      return info.mac || null;
+    } catch (error) {
+      console.log('Failed to get MAC address:', error);
+      return null;
+    }
   }
 }
 
