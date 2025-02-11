@@ -6,7 +6,7 @@
 
 <script>
   Homey.showLoadingOverlay();
-  Homey.getDeviceList().then(devices => {
+  Homey.emit('list_devices').then(devices => {
     Homey.hideLoadingOverlay();
     const container = document.getElementById('devices-list');
     

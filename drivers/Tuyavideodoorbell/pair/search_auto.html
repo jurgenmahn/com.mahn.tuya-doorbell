@@ -35,10 +35,9 @@
     Homey.showLoadingOverlay();
 
     try {
-      const devices = await Homey.emit('search_auto', data);
-      console.log('Discovery response:', devices);
-      if (devices && devices.length > 0) {
-        await Homey.emit('list_devices', devices);
+      const discoveredDevices = await Homey.emit('search_auto', data);
+      console.log('Discovery response:', discoveredDevices);
+      if (discoveredDevices && discoveredDevices.length > 0) {
         Homey.showView('list_devices');
       } else {
         Homey.hideLoadingOverlay();

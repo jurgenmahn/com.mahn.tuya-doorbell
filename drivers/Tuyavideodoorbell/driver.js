@@ -36,9 +36,12 @@ class MyDriver extends Homey.Driver {
     });
 
     // Handle discovered devices list
-    session.setHandler('list_devices', async (devices) => {
-      console.log('List devices handler called with:', devices);
-      return devices || [pairingDevice];
+    session.setHandler('list_devices', async () => {
+      console.log('List devices handler called');
+      if (pairingDevice && Object.keys(pairingDevice).length > 0) {
+        return [pairingDevice];
+      }
+      return [];
     });
 
     // Start discovery when entering automatic search
