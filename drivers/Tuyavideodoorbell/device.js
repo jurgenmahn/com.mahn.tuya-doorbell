@@ -45,39 +45,80 @@ class MyDevice extends Homey.Device {
   }
 
   handleDeviceData(data) {
-    // Doorbell button press (DPS 1)
-    if (data.dps['1']) {
-      this.triggerFlow('doorbell_pressed');
-      this.setCapabilityValue('button', true)
-        .then(() => this.setCapabilityValue('button', false));
-    }
-    
-    // Motion detection (DPS 2)
-    if (data.dps['2']) {
-      this.triggerFlow('motion_detected');
-      this.setCapabilityValue('alarm_motion', data.dps['2']);
-    }
+    this.log('Received device data:', data);
 
-    // Doorbell ring with media payload (DPS 185)
-    if (data.dps['185']) {
-      try {
-        const buffer = Buffer.from(data.dps['185'], 'base64');
-        const responseData = JSON.parse(buffer.toString('utf-8'));
-        
-        if (responseData.cmd === 'ipc_doorbell') {
-          this.homey.app.log('Doorbell ring event with media:', responseData.files);
-          this.triggerFlow('doorbell_pressed', {
-            images: responseData.files.map(file => ({
-              path: file[0],
-              id: file[1],
-              url: `https://${responseData.bucket}.oss-us-west-1.aliyuncs.com${file[0]}`
-            }))
-          });
-        }
-      } catch (error) {
-        this.log('Error processing media payload:', error);
+    if (!data || !data.dps) return;
+
+    // Handle each DPS value
+    Object.entries(data.dps).forEach(([key, value]) => {
+      switch (key) {
+        case '1': // Doorbell button press
+          if (value) {
+            this.log('Doorbell button pressed');
+            this.triggerFlow('doorbell_pressed');
+            this.setCapabilityValue('button', true)
+              .then(() => this.setCapabilityValue('button', false))
+              .catch(this.error);
+          }
+          break;
+
+        case '2': // Motion detection
+          this.log('Motion detection state changed:', value);
+          this.triggerFlow('motion_detected');
+          this.setCapabilityValue('alarm_motion', !!value)
+            .catch(this.error);
+          break;
+
+        case '3': // Error/Alarm state
+          this.log('Device alarm state changed:', value);
+          this.triggerFlow('device_error');
+          this.setCapabilityValue('alarm_problem', !!value)
+            .catch(this.error);
+          break;
+
+        case '101': // Video settings
+          this.log('Video settings changed:', value);
+          this.triggerFlow('video_settings_changed', { settings: value });
+          break;
+
+        case '102': // Audio settings
+          this.log('Audio settings changed:', value);
+          if (typeof value === 'number') {
+            this.triggerFlow('volume_changed', { volume: value });
+            this.setCapabilityValue('volume_set', value / 100)
+              .catch(this.error);
+          }
+          break;
+
+        case '103': // Motion detection settings
+          this.log('Motion detection settings changed:', value);
+          this.triggerFlow('motion_settings_changed', { settings: value });
+          break;
+
+        case '185': // Media payload
+          try {
+            const buffer = Buffer.from(value, 'base64');
+            const responseData = JSON.parse(buffer.toString('utf-8'));
+            
+            if (responseData.cmd === 'ipc_doorbell') {
+              this.log('Doorbell ring event with media:', responseData.files);
+              this.triggerFlow('doorbell_pressed', {
+                images: responseData.files.map(file => ({
+                  path: file[0],
+                  id: file[1],
+                  url: `https://${responseData.bucket}.oss-us-west-1.aliyuncs.com${file[0]}`
+                }))
+              });
+            }
+          } catch (error) {
+            this.error('Error processing media payload:', error);
+          }
+          break;
+
+        default:
+          this.log(`Unhandled DPS key ${key}:`, value);
       }
-    }
+    });
   }
 
   triggerFlow(flowId) {
