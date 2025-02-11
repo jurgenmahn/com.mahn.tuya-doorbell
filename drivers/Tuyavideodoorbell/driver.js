@@ -38,6 +38,9 @@ class MyDriver extends Homey.Driver {
     // Handle discovered devices list
     session.setHandler('list_devices', async () => {
       console.log('List devices handler called with pairingDevice:', pairingDevice);
+      if (!pairingDevice || Object.keys(pairingDevice).length === 0) {
+        throw new Error(this.homey.__('errors.no_devices_found'));
+      }
       return [pairingDevice];
     });
 
@@ -160,21 +163,13 @@ class MyDriver extends Homey.Driver {
       try {
         console.log('Add device handler called with:', device);
         
-        // Store the device data for pairing
+        // Create the device object with required structure
         const deviceToAdd = {
           name: device.name || 'Tuya Doorbell',
           data: {
             id: device.settings.deviceId // This is required for device identification
           },
-          settings: {
-            deviceId: device.settings.deviceId,
-            localKey: device.settings.localKey,
-            ipAddress: device.settings.ipAddress,
-            port: device.settings.port || 6668
-          },
-          store: {
-            mac: device.settings.mac || null
-          },
+          settings: device.settings,
           capabilities: [
             'button',
             'alarm_motion',
@@ -187,6 +182,7 @@ class MyDriver extends Homey.Driver {
         await this.validateDevice(deviceToAdd);
         
         console.log('Device validated and ready to add:', deviceToAdd);
+        pairingDevice = deviceToAdd;
         return deviceToAdd;
       } catch (error) {
         console.error('Add device failed:', error);
