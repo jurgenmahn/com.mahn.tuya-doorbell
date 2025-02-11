@@ -60,9 +60,15 @@ class MyDriver extends Homey.Driver {
               ip: ip,
               version: 3.3,
               nullPayloadOnJSONError: true,
-              issueGetOnConnect: true,
-              issueRefreshOnConnect: true,
+              issueGetOnConnect: false,  // Don't auto-request on connect
+              issueRefreshOnConnect: false, // Don't auto-refresh on connect
               port: 6668
+            });
+
+            // Set up error handler before connecting
+            device.on('error', (err) => {
+              console.log('Device error:', err);
+              // Error is handled, prevent it from bubbling up
             });
 
             console.log(`Attempting to connect to device at ${ip}...`);
