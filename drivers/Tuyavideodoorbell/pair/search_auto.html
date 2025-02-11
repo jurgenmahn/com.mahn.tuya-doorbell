@@ -35,7 +35,13 @@
     Homey.showLoadingOverlay();
 
     try {
-      const result = await Homey.emit('search_auto', data);
+      // Set a longer timeout (30 seconds)
+      const result = await Promise.race([
+        Homey.emit('search_auto', data),
+        new Promise((_, reject) => 
+          setTimeout(() => reject(new Error(Homey.__('errors.discovery_timeout'))), 30000)
+        )
+      ]);
       console.log('Discovery response:', result);
       if (result && Array.isArray(result) && result.length > 0) {
         // Store the discovered devices
