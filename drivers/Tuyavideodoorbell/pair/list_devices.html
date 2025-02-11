@@ -1,18 +1,34 @@
-<!-- Empty template required by Homey pairing flow -->
 <!-- List Discovered Devices -->
 <div class="container">
   <h2 data-i18n="pair.list_devices.title"></h2>
-  {{#if devices.length}}
-  <ul>
-    {{#each devices}}
-    <li>
-      <h3>{{name}}</h3>
-      <p>ID: {{data.id}}</p>
-      <button data-device="{{id}}" data-i18n="pair.list_devices.select"></button>
-    </li>
-    {{/each}}
-  </ul>
-  {{else}}
-  <p data-i18n="pair.list_devices.no_devices_found"></p>
-  {{/if}}
+  <div id="devices-list"></div>
 </div>
+
+<script>
+  Homey.showLoadingOverlay();
+  Homey.emit('list_devices').then(devices => {
+    Homey.hideLoadingOverlay();
+    const container = document.getElementById('devices-list');
+    
+    if (devices && devices.length > 0) {
+      const ul = document.createElement('ul');
+      devices.forEach(device => {
+        const li = document.createElement('li');
+        li.innerHTML = `
+          <h3>${device.name}</h3>
+          <p>ID: ${device.data.id}</p>
+          <button class="button" onclick="Homey.emit('add_device', ${JSON.stringify(device)})" data-i18n="pair.list_devices.select"></button>
+        `;
+        ul.appendChild(li);
+      });
+      container.appendChild(ul);
+    } else {
+      const p = document.createElement('p');
+      p.setAttribute('data-i18n', 'pair.list_devices.no_devices_found');
+      container.appendChild(p);
+    }
+  }).catch(error => {
+    Homey.hideLoadingOverlay();
+    Homey.alert(error);
+  });
+</script>
