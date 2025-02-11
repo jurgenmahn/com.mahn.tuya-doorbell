@@ -66,16 +66,17 @@ class MyDriver extends Homey.Driver {
     });
   }
 
-  async discoverDevices(session) {
+  async discoverDevices(session) { // this whole function doesnt work, the tuya device is listening on tcp port 6668 and not using udp, so can you rewrite this so we scna the local network for devices listenign on 6668, is answert send the right message to it to identify the device. AI!
     console.log("Device discovery started");
-    try {
-      const devices = [];
-      const dgram = require('dgram');
-      const socket = dgram.createSocket('udp4');
-      
+    const devices = [];
+    const dgram = require('dgram');
+    const socket = dgram.createSocket('udp4');
+
+    try {  
       socket.on('error', (err) => {
         console.log('Socket error:', err);
         socket.close();
+        return [];
       });
 
       socket.on('listening', () => {
@@ -110,25 +111,18 @@ class MyDriver extends Homey.Driver {
           }
         } catch (err) {
           this.log('Error parsing device response:', err);
+          return [];
         }
       });
 
       console.log("Binding to socket");
       socket.bind();
 
-      // Close socket after 30 seconds
-      setTimeout(() => {
-        socket.close();
-        if (devices.length === 0) {
-          console.log("timeout reached, no devices found");
-          session.emit('no_devices', []);
-          session.showView('no_devices');
-        }
-      }, 30000);
     } catch (error) {
       console.log('Discovery failed:', error);
       session.emit('no_devices', []);
       session.showView('no_devices');
+      return [];
     }
 
     return new Promise((resolve) => {
