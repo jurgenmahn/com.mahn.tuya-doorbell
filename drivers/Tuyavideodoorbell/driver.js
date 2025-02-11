@@ -106,14 +106,20 @@ class MyDriver extends Homey.Driver {
             return [discoveredDevice]; // This will resolve the promise
           } catch (err) {
             console.log(`Failed to connect to ${ip}:`, err.message);
+            try {
+              await device.disconnect();
+            } catch (disconnectErr) {
+              console.log(`Error during disconnect:`, disconnectErr.message);
+            }
             continue;
           }
         }
 
+        // If we get here, no device was found
         throw new Error(this.homey.__('errors.no_devices_found'));
       } catch (error) {
         console.error("Discovery failed:", error);
-        return [];
+        throw error; // Propagate error to frontend
       }
     });
 
@@ -139,46 +145,44 @@ class MyDriver extends Homey.Driver {
   }
 
   async scanNetwork() {
-    return new Promise(async (resolve) => {
-      const foundIPs = [];
-      const baseAddr = '192.168.113';
-      const scanPromises = [];
+    const foundIPs = [];
+    const baseAddr = '192.168.113';
+    const scanPromises = [];
 
-      console.log("Starting port scan on network:", baseAddr);
+    console.log("Starting port scan on network:", baseAddr);
 
-      for (let i = 1; i < 255; i++) {
-        const ip = `${baseAddr}.${i}`;
-        scanPromises.push(
-          new Promise((resolveIP) => {
-            const socket = new net.Socket();
-            socket.setTimeout(500);
+    for (let i = 1; i < 255; i++) {
+      const ip = `${baseAddr}.${i}`;
+      scanPromises.push(
+        new Promise((resolve) => {
+          const socket = new net.Socket();
+          socket.setTimeout(500);
 
-            socket.on('connect', () => {
-              console.log(`Found device at ${ip}`);
-              foundIPs.push(ip);
-              socket.destroy();
-              resolveIP();
-            });
+          socket.on('connect', () => {
+            console.log(`Found device at ${ip}`);
+            foundIPs.push(ip);
+            socket.destroy();
+            resolve();
+          });
 
-            socket.on('error', () => {
-              socket.destroy();
-              resolveIP();
-            });
+          socket.on('error', () => {
+            socket.destroy();
+            resolve();
+          });
 
-            socket.on('timeout', () => {
-              socket.destroy();
-              resolveIP();
-            });
+          socket.on('timeout', () => {
+            socket.destroy();
+            resolve();
+          });
 
-            socket.connect(6668, ip);
-          })
-        );
-      }
+          socket.connect(6668, ip);
+        })
+      );
+    }
 
-      await Promise.all(scanPromises);
-      console.log(`Found ${foundIPs.length} devices listening on port 6668`);
-      resolve(foundIPs);
-    });
+    await Promise.all(scanPromises);
+    console.log(`Found ${foundIPs.length} devices listening on port 6668`);
+    return foundIPs;
   }
 
   async getMacFromDevice(device) {
