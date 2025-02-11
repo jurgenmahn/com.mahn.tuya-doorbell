@@ -37,11 +37,8 @@ class MyDriver extends Homey.Driver {
 
     // Handle discovered devices list
     session.setHandler('list_devices', async () => {
-      console.log('List devices handler called');
-      if (pairingDevice && Object.keys(pairingDevice).length > 0) {
-        return [pairingDevice];
-      }
-      return [];
+      console.log('List devices handler called with pairingDevice:', pairingDevice);
+      return [pairingDevice];
     });
 
     // Start discovery when entering automatic search
@@ -91,6 +88,7 @@ class MyDriver extends Homey.Driver {
               }
             };
 
+            pairingDevice = discoveredDevice;
             return [discoveredDevice];
           } catch (err) {
             console.log(`Failed to connect to ${ip}:`, err.message);

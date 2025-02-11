@@ -6,7 +6,8 @@
 
 <script>
   Homey.showLoadingOverlay();
-  Homey.emit('list_devices').then(devices => {
+  // Get devices from either the stored list or request new list
+  (window.discoveredDevices ? Promise.resolve(window.discoveredDevices) : Homey.emit('list_devices')).then(devices => {
     Homey.hideLoadingOverlay();
     const container = document.getElementById('devices-list');
     
