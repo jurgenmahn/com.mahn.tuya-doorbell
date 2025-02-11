@@ -1,5 +1,7 @@
 const Homey = require('homey');
 const TuyAPI = require('tuyapi');
+const net = require('net');
+const os = require('os');
 
 class MyDriver extends Homey.Driver {
   async onInit() {
