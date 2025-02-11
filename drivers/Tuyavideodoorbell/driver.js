@@ -66,75 +66,106 @@ class MyDriver extends Homey.Driver {
     });
   }
 
-  async discoverDevices(session) { // this whole function doesnt work, the tuya device is listening on tcp port 6668 and not using udp, so can you rewrite this so we scna the local network for devices listenign on 6668, is answert send the right message to it to identify the device. AI!
+  async discoverDevices(session) {
     console.log("Device discovery started");
     const devices = [];
-    const dgram = require('dgram');
-    const socket = dgram.createSocket('udp4');
-
-    try {  
-      socket.on('error', (err) => {
-        console.log('Socket error:', err);
-        socket.close();
-        return [];
-      });
-
-      socket.on('listening', () => {
-        socket.setBroadcast(true);
-        const discoveryMessage = Buffer.from('{"t": "scan"}');
-        socket.send(discoveryMessage, 0, discoveryMessage.length, 6668, '255.255.255.255');
-      });
-      console.log("listening for broadcast reply");
-      socket.on('message', (msg, rinfo) => {
-        try {
-          console.log("received answer");
-          const data = JSON.parse(msg.toString());
-          if (data.gwId) {
-            console.log("Got answer from a tuya device");
-            const device = {
-              name: 'Tuya Doorbell',
-              data: {
-                id: data.gwId
-              },
-              settings: {
-                deviceId: data.gwId,
-                ipAddress: rinfo.address,
-                port: 6668
-              }
-            };
-            if (!devices.find(d => d.data.id === device.data.id)) {
-              console.log("listing devices");
-              devices.push(device);
-              session.emit('list_devices', devices);
-              session.showView('list_devices');
-            }
-          }
-        } catch (err) {
-          this.log('Error parsing device response:', err);
-          return [];
+    const net = require('net');
+    const os = require('os');
+    
+    // Get local network interfaces
+    const interfaces = os.networkInterfaces();
+    const networks = [];
+    
+    // Find all IPv4 addresses
+    Object.values(interfaces).forEach(iface => {
+      iface.forEach(addr => {
+        if (addr.family === 'IPv4' && !addr.internal) {
+          networks.push(addr.address);
         }
       });
+    });
 
-      console.log("Binding to socket");
-      socket.bind();
+    if (networks.length === 0) {
+      console.log('No network interfaces found');
+      session.emit('no_devices', []);
+      session.showView('no_devices');
+      return [];
+    }
 
+    // Get the network base address (assuming /24 subnet)
+    const baseAddr = networks[0].split('.').slice(0, 3).join('.');
+    const scanPromises = [];
+
+    // Scan IP range
+    for (let i = 1; i < 255; i++) {
+      const ip = `${baseAddr}.${i}`;
+      scanPromises.push(this.checkDevice(ip, devices, session));
+    }
+
+    try {
+      await Promise.all(scanPromises);
+      
+      if (devices.length === 0) {
+        console.log("No devices found");
+        session.emit('no_devices', []);
+        session.showView('no_devices');
+      }
+      
+      return devices;
     } catch (error) {
       console.log('Discovery failed:', error);
       session.emit('no_devices', []);
       session.showView('no_devices');
       return [];
     }
+  }
 
+  checkDevice(ip, devices, session) {
     return new Promise((resolve) => {
-      setTimeout(() => {
-        socket.close();
-        if (devices.length === 0) {
-          console.log("timeout reached, no devices found");
-          session.emit('no_devices', []);
-          session.showView('no_devices');
+      const socket = new net.Socket();
+      const timeout = 500; // 500ms timeout per device
+
+      socket.setTimeout(timeout);
+
+      socket.on('connect', () => {
+        console.log(`Found device at ${ip}`);
+        // Send Tuya protocol handshake
+        const prefix = Buffer.from([0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00]);
+        const command = JSON.stringify({ cmd: 'query' });
+        const suffix = Buffer.from([0x00]);
+        const message = Buffer.concat([prefix, Buffer.from(command), suffix]);
+        
+        socket.write(message);
+
+        // Add potential device
+        const device = {
+          name: 'Tuya Doorbell',
+          data: {
+            id: ip.replace(/\./g, '') // Temporary ID based on IP
+          },
+          settings: {
+            ipAddress: ip,
+            port: 6668
+          }
+        };
+
+        if (!devices.find(d => d.data.id === device.data.id)) {
+          devices.push(device);
+          session.emit('list_devices', devices);
         }
-        resolve(devices);
-      }, 30000);
+      });
+
+      socket.on('error', () => {
+        socket.destroy();
+        resolve();
+      });
+
+      socket.on('timeout', () => {
+        socket.destroy();
+        resolve();
+      });
+
+      socket.connect(6668, ip);
     });
   }
 }
