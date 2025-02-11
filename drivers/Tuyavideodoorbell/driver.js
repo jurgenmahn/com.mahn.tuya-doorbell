@@ -58,7 +58,11 @@ class MyDriver extends Homey.Driver {
               id: data.deviceId,
               key: data.localKey,
               ip: ip,
-              version: '3.3'
+              version: 3.3,
+              nullPayloadOnJSONError: true,
+              issueGetOnConnect: true,
+              issueRefreshOnConnect: true,
+              port: 6668
             });
 
             console.log(`Attempting to connect to device at ${ip}...`);
