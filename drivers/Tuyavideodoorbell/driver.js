@@ -123,12 +123,14 @@ class MyDriver extends Homey.Driver {
         const suffix = Buffer.from([0x00]);
         const message = Buffer.concat([prefix, Buffer.from(command), suffix]);
         
+// can you add here something to log the response from the devices? AI!
+
         console.log("Sending handshake message:", message);
         socket.write(message);
 
         // Add potential device
         const device = {
-          name: 'Tuya Doorbell',
+          name: 'Tuya Device',
           data: {
             id: ip.replace(/\./g, '') // Temporary ID based on IP
           },
