@@ -203,8 +203,7 @@
         "button",
         "alarm_motion",
         "alarm_problem",
-        "volume_down",
-        "volume_up"
+        "volume_set"
       ],
       "platforms": [
         "local"
@@ -417,59 +416,86 @@
     "alarm_motion": {
       "type": "boolean",
       "title": {
-        "en": "Motion Alarm",
-        "nl": "Bewegingsalarm",
-        "da": "Bevægelsesalarm",
-        "de": "Bewegungsalarm",
-        "es": "Alarma de movimiento",
-        "fr": "Alarme de mouvement",
-        "it": "Allarme movimento",
-        "no": "Bevegelsesalarm",
-        "sv": "Rörelsealarm",
-        "pl": "Alarm ruchu",
-        "ru": "Сигнализация движения",
-        "ko": "동작 경보"
+        "en": "Motion Detection",
+        "nl": "Bewegingsdetectie",
+        "da": "Bevægelsesregistrering",
+        "de": "Bewegungserkennung",
+        "es": "Detección de movimiento",
+        "fr": "Détection de mouvement",
+        "it": "Rilevamento movimento",
+        "no": "Bevegelsesdeteksjon",
+        "sv": "Rörelsedetektion",
+        "pl": "Wykrywanie ruchu",
+        "ru": "Обнаружение движения",
+        "ko": "동작 감지"
       },
       "getable": true,
-      "setable": false
+      "setable": false,
+      "insights": true,
+      "uiComponent": "sensor"
     },
     "button": {
       "type": "boolean",
       "title": {
-        "en": "Button",
-        "nl": "Knop",
-        "da": "Knap",
-        "de": "Knopf",
-        "es": "Botón",
-        "fr": "Bouton",
-        "it": "Pulsante",
-        "no": "Knapp",
-        "sv": "Knapp",
-        "pl": "Przycisk",
-        "ru": "Кнопка",
-        "ko": "버튼"
+        "en": "Doorbell Button",
+        "nl": "Deurbel Knop",
+        "da": "Dørklokkeknap",
+        "de": "Türklingel-Taste",
+        "es": "Botón del Timbre",
+        "fr": "Bouton de Sonnette",
+        "it": "Pulsante Campanello",
+        "no": "Ringeklokkeknapp",
+        "sv": "Dörrklocka Knapp",
+        "pl": "Przycisk Dzwonka",
+        "ru": "Кнопка Звонка",
+        "ko": "초인종 버튼"
       },
       "getable": true,
-      "setable": false
+      "setable": false,
+      "insights": true
     },
-    "onoff": {
+    "alarm_problem": {
       "type": "boolean",
       "title": {
-        "en": "On/Off",
-        "nl": "Aan/Uit",
-        "da": "Tænd/Sluk",
-        "de": "Ein/Aus",
-        "es": "Encendido/Apagado",
-        "fr": "Allumer/Éteindre",
-        "it": "Acceso/Spento",
-        "no": "På/Av",
-        "sv": "På/Av",
-        "pl": "Włącz/Wyłącz",
-        "ru": "Вкл/Выкл",
-        "ko": "켜기/끄기"
+        "en": "Device Problem",
+        "nl": "Apparaat Probleem",
+        "da": "Enhedsproblem",
+        "de": "Geräteproblem",
+        "es": "Problema del Dispositivo",
+        "fr": "Problème d'Appareil",
+        "it": "Problema Dispositivo",
+        "no": "Enhetsproblem",
+        "sv": "Enhetsproblem",
+        "pl": "Problem z Urządzeniem",
+        "ru": "Проблема Устройства",
+        "ko": "장치 문제"
       },
       "getable": true,
-      "setable": true
+      "setable": false,
+      "insights": true
+    },
+    "volume_set": {
+      "type": "number",
+      "title": {
+        "en": "Volume",
+        "nl": "Volume",
+        "da": "Lydstyrke",
+        "de": "Lautstärke",
+        "es": "Volumen",
+        "fr": "Volume",
+        "it": "Volume",
+        "no": "Volum",
+        "sv": "Volym",
+        "pl": "Głośność",
+        "ru": "Громкость",
+        "ko": "볼륨"
+      },
+      "getable": true,
+      "setable": true,
+      "min": 0,
+      "max": 1,
+      "step": 0.01,
+      "uiComponent": "slider"
     }
   },
   "discovery": {
