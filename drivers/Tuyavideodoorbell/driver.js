@@ -155,8 +155,18 @@ class MyDriver extends Homey.Driver {
       }
     });
 
+    // Handle add device
+    session.setHandler('add_device', async (device) => {
+      try {
+        await this.validateDevice(device);
+        return device;
+      } catch (error) {
+        throw new Error(this.homey.__('errors.invalid_credentials'));
+      }
+    });
+
     // Validate credentials before adding device
-    session.setHandler('validate', async (device) => {
+    async validateDevice(device) {
       try {
         const testDevice = new TuyAPI({
           id: device.settings.deviceId,
