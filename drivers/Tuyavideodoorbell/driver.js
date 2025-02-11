@@ -123,10 +123,24 @@ class MyDriver extends Homey.Driver {
         const suffix = Buffer.from([0x00]);
         const message = Buffer.concat([prefix, Buffer.from(command), suffix]);
         
-// can you add here something to log the response from the devices? AI!
-
         console.log("Sending handshake message:", message);
         socket.write(message);
+
+        // Set up response handling
+        let responseData = Buffer.alloc(0);
+        socket.on('data', (data) => {
+            responseData = Buffer.concat([responseData, data]);
+            console.log(`Raw response from ${ip}:`, data);
+            try {
+                // Try to parse as JSON after removing Tuya protocol wrapper
+                const jsonStr = responseData.slice(20, -1).toString();
+                console.log(`Parsed response from ${ip}:`, jsonStr);
+                const parsed = JSON.parse(jsonStr);
+                console.log(`JSON object from ${ip}:`, parsed);
+            } catch (e) {
+                console.log(`Could not parse response from ${ip} as JSON:`, e.message);
+            }
+        });
 
         // Add potential device
         const device = {
