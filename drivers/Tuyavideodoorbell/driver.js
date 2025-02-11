@@ -72,6 +72,7 @@ class MyDriver extends Homey.Driver {
             await device.disconnect();
             console.log(`Disconnected from device at ${ip}`);
 
+            // Store the discovered device and return immediately
             const discoveredDevice = {
               name: 'Tuya Doorbell',
               data: {
@@ -89,15 +90,14 @@ class MyDriver extends Homey.Driver {
             };
 
             pairingDevice = discoveredDevice;
-            return [discoveredDevice];
+            return [discoveredDevice]; // This will resolve the promise
           } catch (err) {
             console.log(`Failed to connect to ${ip}:`, err.message);
             continue;
           }
         }
 
-        console.log("No matching device found");
-        return [];
+        throw new Error(this.homey.__('errors.no_devices_found'));
       } catch (error) {
         console.error("Discovery failed:", error);
         return [];
