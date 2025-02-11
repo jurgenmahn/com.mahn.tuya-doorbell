@@ -187,7 +187,6 @@ class MyDriver extends Homey.Driver {
       throw new Error(this.homey.__('pair.validation_failed'));
     }
   }
-}
 
   async scanNetwork() {
     const foundIPs = [];
