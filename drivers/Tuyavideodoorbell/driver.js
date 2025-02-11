@@ -60,9 +60,16 @@ class MyDriver extends Homey.Driver {
               version: '3.3'
             });
 
+            console.log(`Attempting to connect to device at ${ip}...`);
             await device.connect();
             console.log(`Successfully connected to device at ${ip}`);
+            
+            // Get device info before disconnecting
+            const status = await device.get({schema: true});
+            console.log(`Got device status:`, status);
+            
             await device.disconnect();
+            console.log(`Disconnected from device at ${ip}`);
 
             const discoveredDevice = {
               name: 'Tuya Doorbell',
