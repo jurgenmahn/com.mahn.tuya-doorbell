@@ -131,7 +131,17 @@ class MyDriver extends Homey.Driver {
       session.showView('no_devices');
     }
 
-    // can you add here something so the function waits untill discovery is done and socket is closed and returns the result AI!
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        socket.close();
+        if (devices.length === 0) {
+          console.log("timeout reached, no devices found");
+          session.emit('no_devices', []);
+          session.showView('no_devices');
+        }
+        resolve(devices);
+      }, 30000);
+    });
   }
 }
 
