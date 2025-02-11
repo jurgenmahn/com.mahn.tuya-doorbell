@@ -44,29 +44,48 @@ class MyDriver extends Homey.Driver {
     session.setHandler('search_auto', async (data) => {
       console.log("Starting discovery with credentials:", { deviceId: data.deviceId, key: '[hidden]' });
       try {
-        const device = new TuyAPI({
-          id: data.deviceId,
-          key: data.localKey,
-          version: '3.3'
-        });
+        // First scan network for devices on port 6668
+        console.log("Scanning network for open port 6668...");
+        const ips = await this.scanNetwork();
+        console.log("Found devices:", ips);
 
-        await device.find();
-        console.log("Device found:", device.device);
+        // Try each IP with the provided credentials
+        for (const ip of ips) {
+          try {
+            console.log(`Trying to connect to ${ip} with provided credentials...`);
+            const device = new TuyAPI({
+              id: data.deviceId,
+              key: data.localKey,
+              ip: ip,
+              version: '3.3'
+            });
 
-        const discoveredDevice = {
-          name: 'Tuya Doorbell',
-          data: {
-            id: data.deviceId
-          },
-          settings: {
-            deviceId: data.deviceId,
-            localKey: data.localKey,
-            ipAddress: device.device.ip,
-            port: 6668
+            await device.connect();
+            console.log(`Successfully connected to device at ${ip}`);
+            await device.disconnect();
+
+            const discoveredDevice = {
+              name: 'Tuya Doorbell',
+              data: {
+                id: data.deviceId
+              },
+              settings: {
+                deviceId: data.deviceId,
+                localKey: data.localKey,
+                ipAddress: ip,
+                port: 6668
+              }
+            };
+
+            return [discoveredDevice];
+          } catch (err) {
+            console.log(`Failed to connect to ${ip}:`, err.message);
+            continue;
           }
-        };
+        }
 
-        return [discoveredDevice];
+        console.log("No matching device found");
+        return [];
       } catch (error) {
         console.error("Discovery failed:", error);
         return [];
@@ -94,137 +113,46 @@ class MyDriver extends Homey.Driver {
     });
   }
 
-  async discoverDevices(session) {
-    console.log("=== Device discovery started ===");
-    const devices = [];
-    const net = require('net');
-    const os = require('os');
-    
-    console.log("Getting network interfaces...");
-    // Hardcoded network range for debugging
-    const baseAddr = '192.168.113';
-    console.log("Using hardcoded network range for debug:", baseAddr);
-    console.log("Base network address:", baseAddr);
-    const scanPromises = [];
+  async scanNetwork() {
+    return new Promise(async (resolve) => {
+      const foundIPs = [];
+      const baseAddr = '192.168.113';
+      const scanPromises = [];
 
-    console.log("Starting IP range scan...");
-    // Scan IP range
-    for (let i = 1; i < 255; i++) {
-      const ip = `${baseAddr}.${i}`;
-      scanPromises.push(this.checkDevice(ip, devices, session));
-    }
+      console.log("Starting port scan on network:", baseAddr);
 
-    try {
-      await Promise.all(scanPromises);
-      
-      if (devices.length === 0) {
-        console.log("No devices found");
-        session.emit('no_devices', []);
-        session.showView('no_devices');
+      for (let i = 1; i < 255; i++) {
+        const ip = `${baseAddr}.${i}`;
+        scanPromises.push(
+          new Promise((resolveIP) => {
+            const socket = new net.Socket();
+            socket.setTimeout(500);
+
+            socket.on('connect', () => {
+              console.log(`Found device at ${ip}`);
+              foundIPs.push(ip);
+              socket.destroy();
+              resolveIP();
+            });
+
+            socket.on('error', () => {
+              socket.destroy();
+              resolveIP();
+            });
+
+            socket.on('timeout', () => {
+              socket.destroy();
+              resolveIP();
+            });
+
+            socket.connect(6668, ip);
+          })
+        );
       }
-      
-      return devices;
-    } catch (error) {
-      console.log('Discovery failed:', error);
-      session.emit('no_devices', []);
-      session.showView('no_devices');
-      return [];
-    }
-  }
 
-  checkDevice(ip, devices, session) {
-    return new Promise((resolve) => {
-      console.log(`Checking IP: ${ip}`);
-      const socket = new net.Socket();
-      const timeout = 500; // 500ms timeout per device
-
-      socket.setTimeout(timeout);
-
-      socket.on('connect', () => {
-        console.log(`=== Found device at ${ip} ===`);
-        console.log("Sending Tuya handshake...");
-        
-        // Send initial Tuya handshake (0x000055aa00000000000000070000000000000000aa55)
-        const handshake = Buffer.from('000055aa00000000000000070000000000000000aa55', 'hex');
-        console.log("Sending handshake:", handshake);
-        socket.write(handshake);
-
-        // Set up response handling
-        socket.on('data', (data) => {
-            console.log(`Raw response from ${ip}:`, data);
-            
-            // Check if response starts with 55aa (valid Tuya device)
-            if (data.length >= 2 && data[0] === 0x55 && data[1] === 0xaa) {
-                console.log(`Found Tuya device at ${ip}`);
-                
-                // If we have enough data for a complete message
-                if (data.length >= 16) {
-                    // Extract payload length from bytes 8-12
-                    const length = data.readUInt32BE(8);
-                    console.log(`Message payload length: ${length}`);
-                    
-                    if (data.length >= 16 + length + 6) {
-                        const payload = data.slice(16, 16 + length);
-                        console.log(`Message payload: ${payload}`);
-                        
-                        // Add confirmed Tuya device
-                        const device = {
-                            name: 'Tuya Doorbell',
-                            data: {
-                                id: ip.replace(/\./g, '')
-                            },
-                            settings: {
-                                ipAddress: ip,
-                                port: 6668
-                            }
-                        };
-
-                        if (!devices.find(d => d.data.id === device.data.id)) {
-                            devices.push(device);
-                            session.emit('list_devices', devices);
-                        }
-                    }
-                }
-            } else {
-                console.log(`Device at ${ip} is not a Tuya device`);
-            }
-        });
-
-        // Add potential device
-        const device = {
-          name: 'Tuya Device',
-          data: {
-            id: ip.replace(/\./g, '') // Temporary ID based on IP
-          },
-          settings: {
-            ipAddress: ip,
-            port: 6668
-          }
-        };
-
-        if (!devices.find(d => d.data.id === device.data.id)) {
-          devices.push(device);
-          session.emit('list_devices', devices);
-        }
-      });
-
-      socket.on('error', (err) => {
-        console.log(`Socket error for ${ip}:`, err.message);
-        socket.destroy();
-        resolve();
-      });
-
-      socket.on('timeout', () => {
-        console.log(`Connection timeout for ${ip}`);
-        socket.destroy();
-        resolve();
-      });
-
-      socket.on('data', (data) => {
-        console.log(`Received data from ${ip}:`, data);
-      });
-
-      socket.connect(6668, ip);
+      await Promise.all(scanPromises);
+      console.log(`Found ${foundIPs.length} devices listening on port 6668`);
+      resolve(foundIPs);
     });
   }
 }
