@@ -1,18 +1,10 @@
-<!-- Empty template required by Homey pairing flow -->
-<!-- List Discovered Devices -->
+<!-- No Devices Found Screen -->
 <div class="container">
-  <h2 data-i18n="pair.list_devices.title"></h2>
-  {{#if devices.length}}
-  <ul>
-    {{#each devices}}
-    <li>
-      <h3>{{name}}</h3>
-      <p>ID: {{data.id}}</p>
-      <button data-device="{{id}}" data-i18n="pair.list_devices.select"></button>
-    </li>
-    {{/each}}
-  </ul>
-  {{else}}
-  <p data-i18n="pair.list_devices.no_devices_found"></p>
-  {{/if}}
+  <h2 data-i18n="pair.no_devices.title"></h2>
+  <p data-i18n="pair.no_devices.text"></p>
+  
+  <div class="form-group">
+    <button class="button" onclick="Homey.showView('search_auto')" data-i18n="pair.no_devices.try_again"></button>
+    <button class="button" onclick="Homey.showView('manual_settings')" data-i18n="pair.no_devices.manual_add"></button>
+  </div>
 </div>

@@ -275,7 +275,8 @@
         {
           "id": "search_auto",
           "navigation": {
-            "next": "list_devices"
+            "next": "list_devices",
+            "error": "no_devices"
           }
         },
         {
