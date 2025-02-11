@@ -75,36 +75,9 @@ class MyDriver extends Homey.Driver {
     const os = require('os');
     
     console.log("Getting network interfaces...");
-    // Get local network interfaces
-    const interfaces = os.networkInterfaces();
-    const networks = [];
-    
-    // Find all IPv4 addresses on local network (192.168.x.x or 10.x.x.x)
-    console.log("Available interfaces:", interfaces);
-    Object.values(interfaces).forEach(iface => {
-      iface.forEach(addr => {
-        if (addr.family === 'IPv4' && !addr.internal) {
-          const ip = addr.address;
-          if (ip.startsWith('192.168.') || ip.startsWith('10.')) {
-            console.log("Found local network interface:", ip);
-            networks.push(ip);
-          } else {
-            console.log("Skipping non-local network interface:", ip);
-          }
-        }
-      });
-    });
-    console.log("Valid networks found:", networks);
-
-    if (networks.length === 0) {
-      console.log('No network interfaces found');
-      session.emit('no_devices', []);
-      session.showView('no_devices');
-      return [];
-    }
-
-    // Get the network base address (assuming /24 subnet)
-    const baseAddr = networks[0].split('.').slice(0, 3).join('.');
+    // Hardcoded network range for debugging
+    const baseAddr = '192.168.113';
+    console.log("Using hardcoded network range for debug:", baseAddr);
     console.log("Base network address:", baseAddr);
     const scanPromises = [];
 
