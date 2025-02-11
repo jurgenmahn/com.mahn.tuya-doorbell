@@ -15,6 +15,7 @@
       devices.forEach(device => {
         const li = document.createElement('li');
         const deviceData = JSON.stringify(device).replace(/'/g, "&#39;");
+        console.log(device);
         li.innerHTML = `
           <h3>${device.name || 'Tuya Doorbell'}</h3>
           <p>ID: ${device.data?.id || device.settings?.deviceId || 'Unknown'}</p>
