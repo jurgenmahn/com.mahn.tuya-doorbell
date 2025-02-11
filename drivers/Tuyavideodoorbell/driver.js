@@ -65,8 +65,13 @@ class MyDriver extends Homey.Driver {
             await device.connect();
             console.log(`Successfully connected to device at ${ip}`);
             
-            // Get device info before disconnecting
-            const status = await device.get({schema: true});
+            // Get device info with timeout
+            const status = await Promise.race([
+              device.get({schema: true}),
+              new Promise((_, reject) => 
+                setTimeout(() => reject(new Error('Device info timeout')), 5000)
+              )
+            ]);
             console.log(`Got device status:`, status);
             
             await device.disconnect();
