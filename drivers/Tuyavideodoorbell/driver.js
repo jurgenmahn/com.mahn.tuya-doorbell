@@ -183,7 +183,7 @@ class MyDriver extends Homey.Driver {
         this.homey.app.log('Validation failed:', error);
         throw new Error(this.homey.__('pair.validation_failed'));
       }
-    });
+    }
   }
 
   async scanNetwork() {
