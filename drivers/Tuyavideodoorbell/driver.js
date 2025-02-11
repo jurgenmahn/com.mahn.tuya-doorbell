@@ -40,7 +40,9 @@ class MyDriver extends Homey.Driver {
 
     // Start discovery when entering automatic search
     session.setHandler('search_auto', async () => {
-      await this.discoverDevices(session);
+      const discoveryResult = await this.discoverDevices(session);
+      console.log("Discovery done");
+      return discoveryResult;
     });
 
     // Validate credentials before adding device
@@ -65,13 +67,14 @@ class MyDriver extends Homey.Driver {
   }
 
   async discoverDevices(session) {
+    console.log("Device discovery started");
     try {
       const devices = [];
       const dgram = require('dgram');
       const socket = dgram.createSocket('udp4');
       
       socket.on('error', (err) => {
-        this.log('Socket error:', err);
+        console.log('Socket error:', err);
         socket.close();
       });
 
@@ -80,11 +83,13 @@ class MyDriver extends Homey.Driver {
         const discoveryMessage = Buffer.from('{"t": "scan"}');
         socket.send(discoveryMessage, 0, discoveryMessage.length, 6668, '255.255.255.255');
       });
-      
+      console.log("listening for broadcast reply");
       socket.on('message', (msg, rinfo) => {
         try {
+          console.log("received answer");
           const data = JSON.parse(msg.toString());
           if (data.gwId) {
+            console.log("Got answer from a tuya device");
             const device = {
               name: 'Tuya Doorbell',
               data: {
@@ -97,8 +102,10 @@ class MyDriver extends Homey.Driver {
               }
             };
             if (!devices.find(d => d.data.id === device.data.id)) {
+              console.log("listing devices");
               devices.push(device);
               session.emit('list_devices', devices);
+              session.showView('list_devices');
             }
           }
         } catch (err) {
@@ -106,19 +113,25 @@ class MyDriver extends Homey.Driver {
         }
       });
 
+      console.log("Binding to socket");
       socket.bind();
 
       // Close socket after 30 seconds
       setTimeout(() => {
         socket.close();
         if (devices.length === 0) {
-          session.emit('list_devices', []);
+          console.log("timeout reached, no devices found");
+          session.emit('no_devices', []);
+          session.showView('no_devices');
         }
       }, 30000);
     } catch (error) {
-      this.log('Discovery failed:', error);
-      session.emit('list_devices', []);
+      console.log('Discovery failed:', error);
+      session.emit('no_devices', []);
+      session.showView('no_devices');
     }
+
+    // can you add here something so the function waits untill discovery is done and socket is closed and returns the result AI!
   }
 }
 
