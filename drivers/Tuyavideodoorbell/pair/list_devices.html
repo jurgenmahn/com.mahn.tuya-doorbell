@@ -22,7 +22,7 @@
           <h3>${device.name || 'Tuya Doorbell'}</h3>
           <p>ID: ${device.data?.id || device.settings?.deviceId || 'Unknown'}</p>
           <p>IP: ${device.settings?.ipAddress || 'Unknown'}</p>
-          <button class="button" onclick='Homey.emit("add_device", ${deviceData}).then(() => { Homey.nextView(); }).catch((err) => { Homey.alert(err.message || "Failed to add device"); })'>Add Device</button>
+          <button class="button" onclick='Homey.emit("add_device", ${deviceData}).then(() => { Homey.done(); }).catch((err) => { Homey.alert(err.message || "Failed to add device"); })'>Add Device</button>
         `;
         ul.appendChild(li);
       });
