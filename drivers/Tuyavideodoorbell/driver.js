@@ -160,9 +160,24 @@ class MyDriver extends Homey.Driver {
       try {
         console.log('Add device handler called with:', device);
         await this.validateDevice(device);
-        // Store the validated device
-        pairingDevice = device;
-        return device;
+        
+        // Ensure device has the required structure
+        const validatedDevice = {
+          name: device.name || 'Tuya Doorbell',
+          data: {
+            id: device.settings.deviceId // This is required for device identification
+          },
+          settings: {
+            ...device.settings,
+            port: device.settings.port || 6668
+          },
+          store: {
+            mac: device.settings.mac || null
+          }
+        };
+        
+        console.log('Validated device structure:', validatedDevice);
+        return validatedDevice;
       } catch (error) {
         console.error('Add device failed:', error);
         throw new Error(this.homey.__('errors.invalid_credentials'));
