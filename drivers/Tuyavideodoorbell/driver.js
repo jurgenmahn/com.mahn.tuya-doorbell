@@ -148,15 +148,17 @@ class MyDriver extends Homey.Driver {
     const foundIPs = [];
     const baseAddr = '192.168.113';
     const scanPromises = [];
+    let scannedCount = 0;
 
     console.log("Starting port scan on network:", baseAddr);
 
+    // Scan in smaller batches to avoid overwhelming the network
     for (let i = 1; i < 255; i++) {
       const ip = `${baseAddr}.${i}`;
       scanPromises.push(
         new Promise((resolve) => {
           const socket = new net.Socket();
-          socket.setTimeout(500);
+          socket.setTimeout(1000); // Increase timeout for more reliable detection
 
           socket.on('connect', () => {
             console.log(`Found device at ${ip}`);
@@ -187,32 +189,45 @@ class MyDriver extends Homey.Driver {
 
   async getMacFromDevice(device) {
     try {
-      // Try different methods to get MAC address
+      // Try different methods to get MAC address with timeouts
       const methods = [
         async () => {
-          const status = await device.get();
+          const status = await Promise.race([
+            device.get(),
+            new Promise((_, reject) => setTimeout(() => reject(new Error('Timeout')), 3000))
+          ]);
           return status?.mac;
         },
         async () => {
-          const info = await device.get({schema: true});
+          const info = await Promise.race([
+            device.get({schema: true}),
+            new Promise((_, reject) => setTimeout(() => reject(new Error('Timeout')), 3000))
+          ]);
           return info?.mac;
         },
         async () => {
-          // Try to get MAC from device info response
-          const response = await device.get({dps: ['101', '103']});
+          const response = await Promise.race([
+            device.get({dps: ['101', '103']}),
+            new Promise((_, reject) => setTimeout(() => reject(new Error('Timeout')), 3000))
+          ]);
           return response?.mac || response?.cid;
         }
       ];
 
       for (const method of methods) {
         try {
+          console.log('Trying MAC retrieval method...');
           const mac = await method();
           if (mac) {
             console.log('Found MAC address:', mac);
             return mac;
           }
         } catch (err) {
-          console.log('MAC retrieval method failed:', err.message);
+          if (err.message === 'Timeout') {
+            console.log('MAC retrieval method timed out');
+          } else {
+            console.log('MAC retrieval method failed:', err.message);
+          }
         }
       }
 
