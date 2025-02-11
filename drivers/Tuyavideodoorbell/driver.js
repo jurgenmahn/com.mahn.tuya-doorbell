@@ -162,12 +162,24 @@ class MyDriver extends Homey.Driver {
     session.setHandler('add_device', async (device) => {
       try {
         console.log('Add device handler called with:', device);
-        
-        // Create the device object with required structure
+
+        // Check if device already exists
+        const existingDevices = this.getDevices();
+        const existingDevice = existingDevices.find(d => d.getData().id === device.data.id);
+
+        if (existingDevice) {
+          this.log(`Device already exists: ${existingDevice.getName()}`);
+          // Update existing device settings
+          await existingDevice.setSettings(device.settings);
+          await existingDevice.onInit();
+          return existingDevice;
+        }
+
+        // Create new device
         const deviceToAdd = {
           name: device.name || 'Tuya Doorbell',
           data: {
-            id: device.settings.deviceId // This is required for device identification
+            id: device.settings.deviceId
           },
           settings: device.settings,
           capabilities: [
@@ -182,7 +194,6 @@ class MyDriver extends Homey.Driver {
         await this.validateDevice(deviceToAdd);
         
         console.log('Device validated and ready to add:', deviceToAdd);
-        pairingDevice = deviceToAdd;
         return deviceToAdd;
       } catch (error) {
         console.error('Add device failed:', error);
