@@ -38,21 +38,32 @@ input {
   margin-bottom: 8px;
 }
 
-.button {
-  background-color: #0066cc;
+.homey-button-primary {
+  background-color: #037FFF;
   color: white;
-  padding: 12px 24px;
+  padding: 16px 24px;
   border: none;
   border-radius: 8px;
   font-size: 16px;
+  font-weight: 500;
   cursor: pointer;
-  transition: background-color 0.2s;
+  transition: all 0.2s ease;
   width: 100%;
   margin-bottom: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
-.button:hover {
-  background-color: #0052a3;
+.homey-button-primary:hover {
+  background-color: #0366d6;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+  transform: translateY(-1px);
+}
+
+.homey-button-primary:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
 ul {
