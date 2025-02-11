@@ -165,26 +165,29 @@ class MyDriver extends Homey.Driver {
       }
     });
 
-    // Validate credentials before adding device
-    async validateDevice(device) {
-      try {
-        const testDevice = new TuyAPI({
-          id: device.settings.deviceId,
-          key: device.settings.localKey,
-          ip: device.settings.ipAddress,
-          port: device.settings.port,
-          version: '3.3'
-        });
-        
-        await testDevice.connect();
-        await testDevice.disconnect();
-        return true;
-      } catch (error) {
-        this.homey.app.log('Validation failed:', error);
-        throw new Error(this.homey.__('pair.validation_failed'));
-      }
+    });
+  }
+
+  // Validate credentials before adding device
+  async validateDevice(device) {
+    try {
+      const testDevice = new TuyAPI({
+        id: device.settings.deviceId,
+        key: device.settings.localKey,
+        ip: device.settings.ipAddress,
+        port: device.settings.port,
+        version: '3.3'
+      });
+      
+      await testDevice.connect();
+      await testDevice.disconnect();
+      return true;
+    } catch (error) {
+      this.homey.app.log('Validation failed:', error);
+      throw new Error(this.homey.__('pair.validation_failed'));
     }
   }
+}
 
   async scanNetwork() {
     const foundIPs = [];
