@@ -179,6 +179,60 @@
           "ko": "누군가가 문 앞에 있습니다"
         },
         "id": "when-the-doorbell-main-button-is-pressed"
+      },
+      {
+        "title": {
+          "en": "Device error occurred"
+        },
+        "hint": {
+          "en": "The device reported an error state"
+        },
+        "id": "device_error"
+      },
+      {
+        "title": {
+          "en": "Video settings changed"
+        },
+        "tokens": [
+          {
+            "name": "settings",
+            "type": "string",
+            "title": {
+              "en": "Settings"
+            }
+          }
+        ],
+        "id": "video_settings_changed"
+      },
+      {
+        "title": {
+          "en": "Volume changed"
+        },
+        "tokens": [
+          {
+            "name": "volume",
+            "type": "number",
+            "title": {
+              "en": "Volume Level"
+            }
+          }
+        ],
+        "id": "volume_changed"
+      },
+      {
+        "title": {
+          "en": "Motion settings changed"
+        },
+        "tokens": [
+          {
+            "name": "settings",
+            "type": "string",
+            "title": {
+              "en": "Settings"
+            }
+          }
+        ],
+        "id": "motion_settings_changed"
       }
     ]
   },
