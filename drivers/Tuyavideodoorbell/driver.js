@@ -79,13 +79,18 @@ class MyDriver extends Homey.Driver {
     const interfaces = os.networkInterfaces();
     const networks = [];
     
-    // Find all IPv4 addresses
+    // Find all IPv4 addresses on local network (192.168.x.x or 10.x.x.x)
     console.log("Available interfaces:", interfaces);
     Object.values(interfaces).forEach(iface => {
       iface.forEach(addr => {
         if (addr.family === 'IPv4' && !addr.internal) {
-          console.log("Found network interface:", addr.address);
-          networks.push(addr.address);
+          const ip = addr.address;
+          if (ip.startsWith('192.168.') || ip.startsWith('10.')) {
+            console.log("Found local network interface:", ip);
+            networks.push(ip);
+          } else {
+            console.log("Skipping non-local network interface:", ip);
+          }
         }
       });
     });
