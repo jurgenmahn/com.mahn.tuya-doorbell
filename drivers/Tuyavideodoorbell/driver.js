@@ -158,9 +158,13 @@ class MyDriver extends Homey.Driver {
     // Handle add device
     session.setHandler('add_device', async (device) => {
       try {
+        console.log('Add device handler called with:', device);
         await this.validateDevice(device);
+        // Store the validated device
+        pairingDevice = device;
         return device;
       } catch (error) {
+        console.error('Add device failed:', error);
         throw new Error(this.homey.__('errors.invalid_credentials'));
       }
     });
@@ -170,16 +174,36 @@ class MyDriver extends Homey.Driver {
   // Validate credentials before adding device
   async validateDevice(device) {
     try {
+      console.log('Validating device:', device);
       const testDevice = new TuyAPI({
         id: device.settings.deviceId,
         key: device.settings.localKey,
         ip: device.settings.ipAddress,
         port: device.settings.port,
-        version: '3.3'
+        version: 3.3,
+        nullPayloadOnJSONError: true
+      });
+
+      // Set up error handler
+      testDevice.on('error', err => {
+        console.log('Validation device error:', err);
       });
       
+      console.log('Attempting to connect to device...');
       await testDevice.connect();
+      console.log('Connected successfully');
+      
+      // Try to get device info
+      const status = await Promise.race([
+        testDevice.get({schema: true}),
+        new Promise((_, reject) => 
+          setTimeout(() => reject(new Error('Validation timeout')), 5000)
+        )
+      ]);
+      console.log('Got device status:', status);
+
       await testDevice.disconnect();
+      console.log('Validation successful');
       return true;
     } catch (error) {
       this.homey.app.log('Validation failed:', error);
