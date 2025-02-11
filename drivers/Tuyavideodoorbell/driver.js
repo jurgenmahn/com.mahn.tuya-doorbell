@@ -73,11 +73,19 @@ class MyDriver extends Homey.Driver {
               )
             ]);
             console.log(`Got device status:`, status);
-            
-            await device.disconnect();
-            console.log(`Disconnected from device at ${ip}`);
 
-            // Store the discovered device and return immediately
+            // Verify this is the correct device by checking the device ID
+            if (status && status.dps && (status.dps['101'] !== undefined || status.dps['103'] !== undefined)) {
+              console.log('Found matching doorbell device');
+              
+              // Get MAC address
+              const mac = await this.getMacFromDevice(device);
+              console.log('Device MAC:', mac);
+              
+              await device.disconnect();
+              console.log(`Disconnected from device at ${ip}`);
+
+              // Store the discovered device and return immediately
             const discoveredDevice = {
               name: 'Tuya Doorbell',
               data: {
@@ -175,13 +183,37 @@ class MyDriver extends Homey.Driver {
 
   async getMacFromDevice(device) {
     try {
-      const status = await device.get();
-      if (status && status.mac) {
-        return status.mac;
+      // Try different methods to get MAC address
+      const methods = [
+        async () => {
+          const status = await device.get();
+          return status?.mac;
+        },
+        async () => {
+          const info = await device.get({schema: true});
+          return info?.mac;
+        },
+        async () => {
+          // Try to get MAC from device info response
+          const response = await device.get({dps: ['101', '103']});
+          return response?.mac || response?.cid;
+        }
+      ];
+
+      for (const method of methods) {
+        try {
+          const mac = await method();
+          if (mac) {
+            console.log('Found MAC address:', mac);
+            return mac;
+          }
+        } catch (err) {
+          console.log('MAC retrieval method failed:', err.message);
+        }
       }
-      // Try to get MAC from device info
-      const info = await device.get({schema: true});
-      return info.mac || null;
+
+      console.log('Could not retrieve MAC address');
+      return null;
     } catch (error) {
       console.log('Failed to get MAC address:', error);
       return null;
