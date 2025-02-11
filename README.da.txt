@@ -1,0 +1,1 @@
+forbinder tuya dørklokken til homey ved at bruge enheds-API, så der er ingen cloud-forbindelse, og responsen er meget hurtigere

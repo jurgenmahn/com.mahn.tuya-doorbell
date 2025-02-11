@@ -1,0 +1,1 @@
+ansluter Tuya-dörrklockan till Homey genom att använda enhets-API:et, så ingen molnanslutning behövs och responsen blir mycket snabbare.

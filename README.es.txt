@@ -1,0 +1,1 @@
+conecta el timbre de tuya a homey usando la API del dispositivo, sin conexión a la nube y con una respuesta mucho más rápida

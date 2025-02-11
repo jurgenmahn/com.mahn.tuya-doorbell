@@ -1,0 +1,45 @@
+{
+  "pair": {
+    "start": {
+      "title": "Ajouter la Sonnette Vidéo Tuya",
+      "subtitle": "Assurez-vous d'avoir l'ID du périphérique, la clé locale et l'adresse IP prêts."
+    },
+    "manual_settings": {
+      "title": "Entrez les Informations du Périphérique",
+      "instructions": "Veuillez entrer les détails requis du périphérique."
+    },
+    "list_devices": {
+      "title": "Sélectionnez Votre Sonnette",
+      "instructions": "Appuyez sur votre sonnette pour l'ajouter à Homey."
+    },
+    "discovery": {
+      "searching": "Recherche de périphériques...",
+      "found": "%d périphériques découverts",
+      "instructions": "Assurez-vous que votre sonnette est en mode appairage"
+    }
+  },
+  "settings": {
+    "video_stream": {
+      "label": "URL du Flux Vidéo",
+      "placeholder": "rtsp:// ou http://"
+    },
+    "event_history": {
+      "label": "Stockage de l'Historique des Événements",
+      "days": " jours"
+    }
+  },
+  "flow": {
+    "triggers": {
+      "doorbell_pressed": "Quand la sonnette est pressée",
+      "motion_detected": "Quand un mouvement est détecté"
+    },
+    "actions": {
+      "snap_image": "Capture d'image de la sonnette",
+      "enable_motion": "Activer la détection de mouvement"
+    }
+  },
+  "errors": {
+    "discovery_failed": "Échec de la découverte des périphériques. Veuillez vérifier les paramètres réseau.",
+    "invalid_credentials": "Identifiants du périphérique incorrects"
+  }
+}

@@ -1,6 +1,5 @@
-'use strict';
-
 const Homey = require('homey');
+require('events').EventEmitter.defaultMaxListeners = 100;
 
 module.exports = class TuyaDoorbellApp extends Homey.App {
   async onInit() {

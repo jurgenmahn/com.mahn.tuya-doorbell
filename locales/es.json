@@ -1,0 +1,45 @@
+{
+  "pair": {
+    "start": {
+      "title": "Agregar Timbre de Video Tuya",
+      "subtitle": "Asegúrate de tener el ID del Dispositivo, la Clave Local y la Dirección IP listos."
+    },
+    "manual_settings": {
+      "title": "Ingresar Información del Dispositivo",
+      "instructions": "Por favor, ingresa los detalles requeridos del dispositivo."
+    },
+    "list_devices": {
+      "title": "Selecciona Tu Timbre",
+      "instructions": "Toca tu timbre para agregarlo a Homey."
+    },
+    "discovery": {
+      "searching": "Buscando dispositivos...",
+      "found": "Se descubrieron %d dispositivos",
+      "instructions": "Asegúrate de que tu timbre esté en modo de emparejamiento"
+    }
+  },
+  "settings": {
+    "video_stream": {
+      "label": "URL del Flujo de Video",
+      "placeholder": "rtsp:// o http://"
+    },
+    "event_history": {
+      "label": "Almacenamiento del Historial de Eventos",
+      "days": " días"
+    }
+  },
+  "flow": {
+    "triggers": {
+      "doorbell_pressed": "Cuando se presiona el timbre",
+      "motion_detected": "Cuando se detecta movimiento"
+    },
+    "actions": {
+      "snap_image": "Capturar imagen del timbre",
+      "enable_motion": "Habilitar detección de movimiento"
+    }
+  },
+  "errors": {
+    "discovery_failed": "El descubrimiento del dispositivo falló. Por favor, verifica la configuración de la red.",
+    "invalid_credentials": "Credenciales del dispositivo inválidas"
+  }
+}

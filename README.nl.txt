@@ -1,0 +1,1 @@
+verbindt de Tuya-deurbel met de Homey via de apparaat-API, dus geen cloudverbinding en een veel snellere reactie

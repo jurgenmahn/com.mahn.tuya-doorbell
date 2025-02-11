@@ -1,0 +1,1 @@
+łączy dzwonek do drzwi Tuya z Homey przy użyciu API urządzenia, co oznacza brak połączenia z chmurą i znacznie szybszą reakcję

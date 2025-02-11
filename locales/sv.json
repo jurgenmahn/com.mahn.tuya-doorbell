@@ -1,0 +1,45 @@
+{
+  "pair": {
+    "start": {
+      "title": "Lägg till Tuya Videodörrklocka",
+      "subtitle": "Se till att du har enhets-ID, lokal nyckel och IP-adress redo."
+    },
+    "manual_settings": {
+      "title": "Ange Enhetsinformation",
+      "instructions": "Ange de nödvändiga enhetsdetaljerna."
+    },
+    "list_devices": {
+      "title": "Välj Din Dörrklocka",
+      "instructions": "Tryck på din dörrklocka för att lägga till den i Homey."
+    },
+    "discovery": {
+      "searching": "Söker efter enheter...",
+      "found": "Upptäckte %d enheter",
+      "instructions": "Se till att din dörrklocka är i parkopplingsläge"
+    }
+  },
+  "settings": {
+    "video_stream": {
+      "label": "Videoström URL",
+      "placeholder": "rtsp:// eller http://"
+    },
+    "event_history": {
+      "label": "Historiklagring av händelser",
+      "days": " dagar"
+    }
+  },
+  "flow": {
+    "triggers": {
+      "doorbell_pressed": "När dörrklockan trycks in",
+      "motion_detected": "När rörelse upptäcks"
+    },
+    "actions": {
+      "snap_image": "Ta bild från dörrklockan",
+      "enable_motion": "Aktivera rörelsedetektering"
+    }
+  },
+  "errors": {
+    "discovery_failed": "Enhetsupptäckt misslyckades. Kontrollera nätverksinställningarna.",
+    "invalid_credentials": "Ogiltiga enhetsuppgifter"
+  }
+}

@@ -1,0 +1,45 @@
+{
+  "pair": {
+    "start": {
+      "title": "Dodaj dzwonek wideo Tuya",
+      "subtitle": "Upewnij się, że masz przygotowane ID urządzenia, Klucz lokalny i adres IP."
+    },
+    "manual_settings": {
+      "title": "Wprowadź informacje o urządzeniu",
+      "instructions": "Proszę wprowadzić wymagane dane urządzenia."
+    },
+    "list_devices": {
+      "title": "Wybierz swój dzwonek",
+      "instructions": "Stuknij swój dzwonek, aby dodać go do Homey."
+    },
+    "discovery": {
+      "searching": "Wyszukiwanie urządzeń...",
+      "found": "Znaleziono %d urządzeń",
+      "instructions": "Upewnij się, że Twój dzwonek jest w trybie parowania"
+    }
+  },
+  "settings": {
+    "video_stream": {
+      "label": "URL strumienia wideo",
+      "placeholder": "rtsp:// lub http://"
+    },
+    "event_history": {
+      "label": "Przechowywanie historii zdarzeń",
+      "days": " dni"
+    }
+  },
+  "flow": {
+    "triggers": {
+      "doorbell_pressed": "Gdy dzwonek jest naciśnięty",
+      "motion_detected": "Gdy wykryto ruch"
+    },
+    "actions": {
+      "snap_image": "Zrób zdjęcie z dzwonka",
+      "enable_motion": "Włącz wykrywanie ruchu"
+    }
+  },
+  "errors": {
+    "discovery_failed": "Nie udało się wykryć urządzenia. Proszę sprawdzić ustawienia sieci.",
+    "invalid_credentials": "Nieprawidłowe dane uwierzytelniające urządzenie"
+  }
+}

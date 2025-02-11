@@ -1,0 +1,45 @@
+{
+  "pair": {
+    "start": {
+      "title": "Tuya Video-Türklingel hinzufügen",
+      "subtitle": "Stellen Sie sicher, dass Sie die Geräte-ID, den lokalen Schlüssel und die IP-Adresse bereit haben."
+    },
+    "manual_settings": {
+      "title": "Geräteinformationen eingeben",
+      "instructions": "Bitte geben Sie die erforderlichen Gerätedaten ein."
+    },
+    "list_devices": {
+      "title": "Wählen Sie Ihre Türklingel",
+      "instructions": "Tippen Sie auf Ihre Türklingel, um sie zu Homey hinzuzufügen."
+    },
+    "discovery": {
+      "searching": "Suche nach Geräten...",
+      "found": "%d Geräte gefunden",
+      "instructions": "Stellen Sie sicher, dass Ihre Türklingel im Pairing-Modus ist"
+    }
+  },
+  "settings": {
+    "video_stream": {
+      "label": "Video-Stream-URL",
+      "placeholder": "rtsp:// oder http://"
+    },
+    "event_history": {
+      "label": "Speicherung des Ereignisverlaufs",
+      "days": " Tage"
+    }
+  },
+  "flow": {
+    "triggers": {
+      "doorbell_pressed": "Wenn die Türklingel betätigt wird",
+      "motion_detected": "Wenn Bewegung erkannt wird"
+    },
+    "actions": {
+      "snap_image": "Türklingelbild aufnehmen",
+      "enable_motion": "Bewegungserkennung aktivieren"
+    }
+  },
+  "errors": {
+    "discovery_failed": "Geräteerkennung fehlgeschlagen. Bitte überprüfen Sie die Netzwerkeinstellungen.",
+    "invalid_credentials": "Ungültige Geräteanmeldedaten"
+  }
+}

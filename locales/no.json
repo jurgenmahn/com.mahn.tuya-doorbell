@@ -1,0 +1,45 @@
+{
+  "pair": {
+    "start": {
+      "title": "Legg til Tuya Video Dørklokke",
+      "subtitle": "Sørg for at du har Enhets-ID, Lokal Nøkkel og IP-adresse klar."
+    },
+    "manual_settings": {
+      "title": "Skriv inn Enhetsinformasjon",
+      "instructions": "Vennligst skriv inn nødvendig enhetsdetaljer."
+    },
+    "list_devices": {
+      "title": "Velg din Dørklokke",
+      "instructions": "Trykk på dørklokken din for å legge den til i Homey."
+    },
+    "discovery": {
+      "searching": "Søker etter enheter...",
+      "found": "Fant %d enheter",
+      "instructions": "Sørg for at dørklokken din er i paringsmodus"
+    }
+  },
+  "settings": {
+    "video_stream": {
+      "label": "Videostrøm URL",
+      "placeholder": "rtsp:// eller http://"
+    },
+    "event_history": {
+      "label": "Lagring av Hendelseshistorikk",
+      "days": " dager"
+    }
+  },
+  "flow": {
+    "triggers": {
+      "doorbell_pressed": "Når dørklokken trykkes",
+      "motion_detected": "Når bevegelse oppdages"
+    },
+    "actions": {
+      "snap_image": "Ta bilde med dørklokken",
+      "enable_motion": "Aktiver bevegelsesdeteksjon"
+    }
+  },
+  "errors": {
+    "discovery_failed": "Enhetsoppdagelse mislyktes. Vennligst sjekk nettverksinnstillingene.",
+    "invalid_credentials": "Ugyldige enhetsopplysninger"
+  }
+}

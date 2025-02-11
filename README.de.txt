@@ -1,0 +1,1 @@
+verbindet die Tuya-Türklingel mit Homey über die Geräte-API, sodass keine Cloud-Verbindung nötig ist und die Reaktionszeit viel schneller ist

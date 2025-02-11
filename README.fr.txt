@@ -1,0 +1,1 @@
+connecte la sonnette Tuya à Homey en utilisant l'API de l'appareil, donc pas de connexion cloud et une réponse beaucoup plus rapide
