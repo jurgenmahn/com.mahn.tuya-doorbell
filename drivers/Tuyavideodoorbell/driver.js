@@ -179,7 +179,7 @@ class MyDriver extends Homey.Driver {
   async scanNetwork() {
     const foundIPs = [];
     const baseAddr = '192.168.113';
-    const BATCH_SIZE = 10;
+    const BATCH_SIZE = 25;
     let scannedCount = 0;
 
     console.log("Starting port scan on network:", baseAddr);
