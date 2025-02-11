@@ -40,12 +40,6 @@
       "instructions": "Enter your Tuya device ID and local key to start scanning",
       "scanning": "Scanning network for your device...",
       "start_scan": "Start Scan"
-    },
-    "no_devices": {
-      "title": "No devices found",
-      "text": "No Tuya doorbells were found on your network. Make sure your device is in pairing mode and connected to your network.",
-      "try_again": "Try Again",
-      "manual_add": "Add Manually"
     }
   },
   "settings": {

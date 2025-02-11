@@ -36,11 +36,7 @@
 
     try {
       const devices = await Homey.emit('search_auto', data);
-      if (devices && devices.length > 0) {
-        Homey.showView('list_devices');
-      } else {
-        Homey.showView('no_devices');
-      }
+      Homey.showView('list_devices');
     } catch (error) {
       Homey.hideLoadingOverlay();
       Homey.alert(Homey.__('errors.discovery_failed'));
