@@ -169,8 +169,8 @@ class MyDriver extends Homey.Driver {
       const batchPromises = [];
       
       for (let i = start; i < end; i++) {
-      const ip = `${baseAddr}.${i}`;
-      scanPromises.push(
+        const ip = `${baseAddr}.${i}`;
+        batchPromises.push(
         new Promise((resolve) => {
           const socket = new net.Socket();
           socket.setTimeout(1000); // Increase timeout for more reliable detection
