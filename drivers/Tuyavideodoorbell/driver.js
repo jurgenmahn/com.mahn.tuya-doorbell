@@ -79,8 +79,8 @@ class MyDriver extends Homey.Driver {
               console.log('Found matching doorbell device');
               
               try {
-                // Get MAC address
-                const mac = await this.getMacFromDevice(device);
+                // Get MAC address using ARP
+                const mac = await this.getMacFromDevice(ip);
                 console.log('Device MAC:', mac);
                 
                 // Store the discovered device and return immediately
@@ -205,51 +205,25 @@ class MyDriver extends Homey.Driver {
     return foundIPs;
   }
 
-  async getMacFromDevice(device) {
+  async getMacFromDevice(ip) {
     try {
-      // Try different methods to get MAC address with timeouts
-      const methods = [
-        async () => {
-          const status = await Promise.race([
-            device.get(),
-            new Promise((_, reject) => setTimeout(() => reject(new Error('Timeout')), 3000))
-          ]);
-          return status?.mac;
-        },
-        async () => {
-          const info = await Promise.race([
-            device.get({schema: true}),
-            new Promise((_, reject) => setTimeout(() => reject(new Error('Timeout')), 3000))
-          ]);
-          return info?.mac;
-        },
-        async () => {
-          const response = await Promise.race([
-            device.get({dps: ['101', '103']}),
-            new Promise((_, reject) => setTimeout(() => reject(new Error('Timeout')), 3000))
-          ]);
-          return response?.mac || response?.cid;
-        }
-      ];
-
-      for (const method of methods) {
-        try {
-          console.log('Trying MAC retrieval method...');
-          const mac = await method();
-          if (mac) {
-            console.log('Found MAC address:', mac);
+      const { execSync } = require('child_process');
+      // Run arp -a to get MAC addresses
+      const arpOutput = execSync('arp -a').toString();
+      
+      // Parse the output to find MAC for our IP
+      const lines = arpOutput.split('\n');
+      for (const line of lines) {
+        if (line.includes(ip)) {
+          const match = line.match(/([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})/);
+          if (match) {
+            const mac = match[0].toLowerCase();
+            console.log(`Found MAC address for ${ip}:`, mac);
             return mac;
-          }
-        } catch (err) {
-          if (err.message === 'Timeout') {
-            console.log('MAC retrieval method timed out');
-          } else {
-            console.log('MAC retrieval method failed:', err.message);
           }
         }
       }
-
-      console.log('Could not retrieve MAC address');
+      console.log(`No MAC address found for ${ip}`);
       return null;
     } catch (error) {
       console.log('Failed to get MAC address:', error);
