@@ -116,29 +116,51 @@ class MyDriver extends Homey.Driver {
 
       socket.on('connect', () => {
         console.log(`=== Found device at ${ip} ===`);
-        console.log("Preparing Tuya handshake message...");
-        // Send Tuya protocol handshake
-        const prefix = Buffer.from([0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00]);
-        const command = JSON.stringify({ cmd: 'query' });
-        const suffix = Buffer.from([0x00]);
-        const message = Buffer.concat([prefix, Buffer.from(command), suffix]);
+        console.log("Sending Tuya handshake...");
         
-        console.log("Sending handshake message:", message);
-        socket.write(message);
+        // Send initial Tuya handshake (0x000055aa00000000000000070000000000000000aa55)
+        const handshake = Buffer.from('000055aa00000000000000070000000000000000aa55', 'hex');
+        console.log("Sending handshake:", handshake);
+        socket.write(handshake);
 
         // Set up response handling
-        let responseData = Buffer.alloc(0);
         socket.on('data', (data) => {
-            responseData = Buffer.concat([responseData, data]);
             console.log(`Raw response from ${ip}:`, data);
-            try {
-                // Try to parse as JSON after removing Tuya protocol wrapper
-                const jsonStr = responseData.slice(20, -1).toString();
-                console.log(`Parsed response from ${ip}:`, jsonStr);
-                const parsed = JSON.parse(jsonStr);
-                console.log(`JSON object from ${ip}:`, parsed);
-            } catch (e) {
-                console.log(`Could not parse response from ${ip} as JSON:`, e.message);
+            
+            // Check if response starts with 55aa (valid Tuya device)
+            if (data.length >= 2 && data[0] === 0x55 && data[1] === 0xaa) {
+                console.log(`Found Tuya device at ${ip}`);
+                
+                // If we have enough data for a complete message
+                if (data.length >= 16) {
+                    // Extract payload length from bytes 8-12
+                    const length = data.readUInt32BE(8);
+                    console.log(`Message payload length: ${length}`);
+                    
+                    if (data.length >= 16 + length + 6) {
+                        const payload = data.slice(16, 16 + length);
+                        console.log(`Message payload: ${payload}`);
+                        
+                        // Add confirmed Tuya device
+                        const device = {
+                            name: 'Tuya Doorbell',
+                            data: {
+                                id: ip.replace(/\./g, '')
+                            },
+                            settings: {
+                                ipAddress: ip,
+                                port: 6668
+                            }
+                        };
+
+                        if (!devices.find(d => d.data.id === device.data.id)) {
+                            devices.push(device);
+                            session.emit('list_devices', devices);
+                        }
+                    }
+                }
+            } else {
+                console.log(`Device at ${ip} is not a Tuya device`);
             }
         });
 
