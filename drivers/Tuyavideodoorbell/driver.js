@@ -159,42 +159,23 @@ class MyDriver extends Homey.Driver {
     });
 
     // Handle add device
-    session.setHandler('add_device', async (device) => {
+    session.setHandler('add_device', async (data) => {
       try {
-        console.log('Add device handler called with:', device);
-
-        // Check if device already exists
-        const existingDevices = this.getDevices();
-        const existingDevice = existingDevices.find(d => d.getData().id === device.data.id);
-
-        if (existingDevice) {
-          this.log(`Device already exists: ${existingDevice.getName()}`);
-          // Update existing device settings
-          await existingDevice.setSettings(device.settings);
-          await existingDevice.onInit();
-          return existingDevice;
-        }
-
-        // Create new device
-        const deviceToAdd = {
-          name: device.name || 'Tuya Doorbell',
-          data: {
-            id: device.settings.deviceId
-          },
-          settings: device.settings,
-          capabilities: [
-            'button',
-            'alarm_motion',
-            'alarm_problem',
-            'volume_set'
-          ]
-        };
-
-        // Validate the device before adding
-        await this.validateDevice(deviceToAdd);
-        
-        console.log('Device validated and ready to add:', deviceToAdd);
-        return deviceToAdd;
+        console.log("add_device, data:")
+        console.log(data)
+  
+        const devices = this.getDevices();
+  
+        // Find the device by its ID
+        const device = devices.find(device => device.getData().id === data.data.id);
+    
+        if (device) {
+          this.log(`Device found: ${device.getName()}`);
+          await device.setSettings(settings);
+          device.onInit();
+        } else {
+          this.log('Device not found');
+        } 
       } catch (error) {
         console.error('Add device failed:', error);
         throw new Error(this.homey.__('errors.invalid_credentials'));
