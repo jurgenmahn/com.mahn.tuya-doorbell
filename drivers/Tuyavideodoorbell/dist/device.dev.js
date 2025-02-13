@@ -88,9 +88,9 @@ function (_Homey$Device) {
       var _this = this;
 
       var settings, status;
-      return regeneratorRuntime.async(function initializeTuyaDevice$(_context3) {
+      return regeneratorRuntime.async(function initializeTuyaDevice$(_context4) {
         while (1) {
-          switch (_context3.prev = _context3.next) {
+          switch (_context4.prev = _context4.next) {
             case 0:
               settings = this.getSettings();
               this.homey.app.log("Device settings");
@@ -111,7 +111,69 @@ function (_Homey$Device) {
               }).on('disconnected', function () {
                 _this.homey.app.log('Doorbell disconnected event fired');
 
-                _this.setUnavailable();
+                _this.setUnavailable(); // Implement reconnection strategy with exponential backoff
+
+
+                var retryCount = 0;
+                var maxRetries = 10;
+                var baseDelay = 1000 * 10; // Start with 10 second delay
+
+                var attemptReconnect = function attemptReconnect() {
+                  var delay;
+                  return regeneratorRuntime.async(function attemptReconnect$(_context3) {
+                    while (1) {
+                      switch (_context3.prev = _context3.next) {
+                        case 0:
+                          if (!(retryCount >= maxRetries)) {
+                            _context3.next = 3;
+                            break;
+                          }
+
+                          _this.homey.app.log('Max reconnection attempts reached');
+
+                          return _context3.abrupt("return");
+
+                        case 3:
+                          delay = baseDelay * Math.pow(2, retryCount);
+
+                          _this.homey.app.log("Attempting to reconnect in ".concat(delay, "ms (attempt ").concat(retryCount + 1, "/").concat(maxRetries, ")"));
+
+                          _context3.next = 7;
+                          return regeneratorRuntime.awrap(new Promise(function (resolve) {
+                            return setTimeout(resolve, delay);
+                          }));
+
+                        case 7:
+                          _context3.prev = 7;
+                          _context3.next = 10;
+                          return regeneratorRuntime.awrap(_this.tuyaDevice.connect());
+
+                        case 10:
+                          _this.homey.app.log('Reconnection successful');
+
+                          retryCount = 0; // Reset counter on successful connection
+
+                          _context3.next = 19;
+                          break;
+
+                        case 14:
+                          _context3.prev = 14;
+                          _context3.t0 = _context3["catch"](7);
+
+                          _this.homey.app.log('Reconnection failed:', _context3.t0);
+
+                          retryCount++;
+                          attemptReconnect(); // Try again with increased delay
+
+                        case 19:
+                        case "end":
+                          return _context3.stop();
+                      }
+                    }
+                  }, null, null, [[7, 14]]);
+                };
+
+                attemptReconnect();
               }).on('error', function (error) {
                 _this.homey.app.log('Doorbell error event fired:', error);
               }).on('data', function (data) {
@@ -122,11 +184,11 @@ function (_Homey$Device) {
                 _this.homey.app.log('dp-refresh event fired', data);
               });
               this.homey.app.log('Attempting to connect to device...');
-              _context3.next = 8;
+              _context4.next = 8;
               return regeneratorRuntime.awrap(this.tuyaDevice.connect());
 
             case 8:
-              _context3.next = 10;
+              _context4.next = 10;
               return regeneratorRuntime.awrap(Promise.race([this.tuyaDevice.get({
                 schema: true
               }), new Promise(function (_, reject) {
@@ -136,11 +198,11 @@ function (_Homey$Device) {
               })]));
 
             case 10:
-              status = _context3.sent;
+              status = _context4.sent;
 
             case 11:
             case "end":
-              return _context3.stop();
+              return _context4.stop();
           }
         }
       }, null, this);
@@ -249,19 +311,19 @@ function (_Homey$Device) {
   }, {
     key: "onSettings",
     value: function onSettings(oldSettings, newSettings) {
-      return regeneratorRuntime.async(function onSettings$(_context4) {
+      return regeneratorRuntime.async(function onSettings$(_context5) {
         while (1) {
-          switch (_context4.prev = _context4.next) {
+          switch (_context5.prev = _context5.next) {
             case 0:
               if (newSettings.ipAddress !== oldSettings.ipAddress || newSettings.port !== oldSettings.port) {
                 this.initializeTuyaDevice();
               }
 
-              return _context4.abrupt("return", _get(_getPrototypeOf(MyDevice.prototype), "onSettings", this).call(this, oldSettings, newSettings));
+              return _context5.abrupt("return", _get(_getPrototypeOf(MyDevice.prototype), "onSettings", this).call(this, oldSettings, newSettings));
 
             case 2:
             case "end":
-              return _context4.stop();
+              return _context5.stop();
           }
         }
       }, null, this);
@@ -269,9 +331,9 @@ function (_Homey$Device) {
   }, {
     key: "onDeleted",
     value: function onDeleted() {
-      return regeneratorRuntime.async(function onDeleted$(_context5) {
+      return regeneratorRuntime.async(function onDeleted$(_context6) {
         while (1) {
-          switch (_context5.prev = _context5.next) {
+          switch (_context6.prev = _context6.next) {
             case 0:
               this.tuyaDevice.disconnect();
 
@@ -279,7 +341,7 @@ function (_Homey$Device) {
 
             case 2:
             case "end":
-              return _context5.stop();
+              return _context6.stop();
           }
         }
       }, null, this);

@@ -39,8 +39,8 @@ class MyDevice extends Homey.Device {
         
         // Implement reconnection strategy with exponential backoff
         let retryCount = 0;
-        const maxRetries = 5;
-        const baseDelay = 1000; // Start with 1 second delay
+        const maxRetries = 10;
+        const baseDelay = 1000 * 10; // Start with 10 second delay
         
         const attemptReconnect = async () => {
           if (retryCount >= maxRetries) {
