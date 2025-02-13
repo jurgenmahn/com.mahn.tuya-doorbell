@@ -10,14 +10,14 @@ class MyDevice extends Homey.Device {
   async onDeleted() {
     this.tuyaDevice.disconnect();
     this.tuyaDevice = null;
-  }  
+  }
 
   async initializeTuyaDevice() {
     const settings = this.getSettings();
 
     this.homey.app.log("Device settings");
     this.homey.app.log(settings);
-    
+
     this.tuyaDevice = new TuyAPI({
       id: settings.deviceId,
       key: settings.localKey,
@@ -36,23 +36,23 @@ class MyDevice extends Homey.Device {
       .on('disconnected', () => {
         this.homey.app.log('Doorbell disconnected event fired');
         this.setUnavailable();
-        
+
         // Implement reconnection strategy with exponential backoff
         let retryCount = 0;
         const maxRetries = 10;
         const baseDelay = 1000 * 10; // Start with 10 second delay
-        
+
         const attemptReconnect = async () => {
           if (retryCount >= maxRetries) {
             this.homey.app.log('Max reconnection attempts reached');
             return;
           }
-          
+
           const delay = baseDelay * Math.pow(2, retryCount);
           this.homey.app.log(`Attempting to reconnect in ${delay}ms (attempt ${retryCount + 1}/${maxRetries})`);
-          
+
           await new Promise(resolve => setTimeout(resolve, delay));
-          
+
           try {
             await this.tuyaDevice.connect();
             this.homey.app.log('Reconnection successful');
@@ -63,7 +63,7 @@ class MyDevice extends Homey.Device {
             attemptReconnect(); // Try again with increased delay
           }
         };
-        
+
         attemptReconnect();
       })
       .on('error', error => {
@@ -72,22 +72,22 @@ class MyDevice extends Homey.Device {
       .on('data', data => this.handleDeviceData(data))
       .on('heartbeat', () => {
         this.homey.app.log('Received doorbell heartbeat');
-      })   
+      })
       .on('dp-refresh', data => {
         this.homey.app.log('dp-refresh event fired', data);
-      })   
-      
-      this.homey.app.log('Attempting to connect to device...');
-      await this.tuyaDevice.connect();    
-      
-      const status = await Promise.race([
-        this.tuyaDevice.get({
-          schema: true
-        }),
-        new Promise((_, reject) =>
-          setTimeout(() => reject(new Error('Validation timeout')), 5000)
-        )
-      ]);
+      })
+
+    this.homey.app.log('Attempting to connect to device...');
+    await this.tuyaDevice.connect();
+
+    const status = await Promise.race([
+      this.tuyaDevice.get({
+        schema: true
+      }),
+      new Promise((_, reject) =>
+        setTimeout(() => reject(new Error('Validation timeout')), 5000)
+      )
+    ]);
 
   }
 
@@ -145,16 +145,20 @@ class MyDevice extends Homey.Device {
         case '115': // Motion detection
           try {
             const buffer = Buffer.from(value, 'base64');
-            const motionData = JSON.parse(buffer.toString('utf-8'));
-            this.homey.app.log('Motion detection data:', motionData);
-            this.triggerFlow('motion_detected');
+            const responseData = JSON.parse(buffer.toString('utf-8'));
+            this.homey.app.log('Motion detection event with media:', responseData);
+            this.triggerFlow('motion_detected', {
+              images: responseData.files.map(file => ({
+                path: file[0],
+                id: file[1],
+                url: `https://${responseData.bucket}.oss-us-west-1.aliyuncs.com${file[0]}`
+              }))
+            });
             this.setCapabilityValue('alarm_motion', true)
               .then(() => this.setCapabilityValue('alarm_motion', false))
               .catch(this.error);
           } catch (error) {
-            this.error('Error decoding motion detection data:', error);
-            this.setCapabilityValue('alarm_motion', !!value)
-              .catch(this.error);
+            this.error('Error processing media payload:', error);
           }
           break;
 
@@ -162,20 +166,20 @@ class MyDevice extends Homey.Device {
           try {
             const buffer = Buffer.from(value, 'base64');
             const responseData = JSON.parse(buffer.toString('utf-8'));
-            
-            if (responseData.cmd === 'ipc_doorbell') {
-              this.homey.app.log('Doorbell ring event with media:', responseData.files);
-              this.triggerFlow('doorbell_pressed', {
-                images: responseData.files.map(file => ({
-                  path: file[0],
-                  id: file[1],
-                  url: `https://${responseData.bucket}.oss-us-west-1.aliyuncs.com${file[0]}`
-                }))
-              });
-              this.setCapabilityValue('button', true)
+
+
+            this.homey.app.log('Doorbell ring event with media:', responseData.files);
+            this.triggerFlow('doorbell_pressed', {
+              images: responseData.files.map(file => ({
+                path: file[0],
+                id: file[1],
+                url: `https://${responseData.bucket}.oss-us-west-1.aliyuncs.com${file[0]}`
+              }))
+            });
+            this.setCapabilityValue('button', true)
               .then(() => this.setCapabilityValue('button', false))
-              .catch(this.error);              
-            }
+              .catch(this.error);
+
           } catch (error) {
             this.error('Error processing media payload:', error);
           }
@@ -198,8 +202,8 @@ class MyDevice extends Homey.Device {
   }
 
   async onSettings(oldSettings, newSettings) {
-    if (newSettings.ipAddress !== oldSettings.ipAddress || 
-        newSettings.port !== oldSettings.port) {
+    if (newSettings.ipAddress !== oldSettings.ipAddress ||
+      newSettings.port !== oldSettings.port) {
       this.initializeTuyaDevice();
     }
     return super.onSettings(oldSettings, newSettings);

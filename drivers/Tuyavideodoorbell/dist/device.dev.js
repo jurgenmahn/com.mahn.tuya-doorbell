@@ -225,6 +225,24 @@ function (_Homey$Device) {
       //   '102': null,
       //   '103': null
       // }
+      // Motion event
+      // [Tuya Doorbell] dp-refresh event fired {
+      //   dps: {
+      //     '115': 'eyJ2IjoiMy4wIiwiYnVja2V0IjoidHktdXMtc3RvcmFnZTMwLXBpYyIsImZpbGVzIjpbWyIvYWNjODRlLTUzNDA0NTQ0LXBwMDFlMjVhMGVmODIzMDExODgyL2RldGVjdC8xNzM5NDg3MDc2LmpwZWciLCIyZTczNDA3NDkzYjNjNGJjIl1dfQ=='
+      //   },
+      //   t: 1739487077
+      // }
+      // [Tuya Doorbell] dp-refresh event fired { dps: { '244': '1' }, t: 1739487077 }    
+      // Decoded: {"v":"3.0","bucket":"ty-us-storage30-pic","files":[["/acc84e-53404544-pp01e25a0ef823011882/detect/1739486999.jpeg","6d6c8b49348930e5"]]}
+      // Button pressed
+      // [Tuya Doorbell] dp-refresh event fired {
+      //   dps: {
+      //     '185': 'eyJ2IjoiMy4wIiwiYnVja2V0IjoidHktdXMtc3RvcmFnZTMwLXBpYyIsImNtZCI6ImlwY19kb29yYmVsbCIsInR5cGUiOiJpbWFnZSIsIndpdGgiOiJyZXNvdXJjZXMiLCJmaWxlcyI6W1siL2FjYzg0ZS01MzQwNDU0NC1wcDAxZTI1YTBlZjgyMzAxMTg4Mi9kZXRlY3QvMTczOTQ4NzMwNC5qcGVnIiwiYmIxNjI1YTg1MGI2ZmU4MCJdXX0='
+      //   },
+      //   t: 1739487306
+      // }
+      // [Tuya Doorbell] dp-refresh event fired { dps: { '244': '0' }, t: 1739487306 }    
+      // Decoded: {"v":"3.0","bucket":"ty-us-storage30-pic","cmd":"ipc_doorbell","type":"image","with":"resources","files":[["/acc84e-53404544-pp01e25a0ef823011882/detect/1739487304.jpeg","bb1625a850b6fe80"]]}
       // Handle each DPS value
 
 
@@ -248,39 +266,55 @@ function (_Homey$Device) {
 
             break;
 
-          case '2':
+          case '115':
             // Motion detection
-            _this2.homey.app.log('Motion detection state changed:', value);
+            try {
+              var buffer = Buffer.from(value, 'base64');
+              var responseData = JSON.parse(buffer.toString('utf-8'));
 
-            _this2.triggerFlow('motion_detected');
+              _this2.homey.app.log('Motion detection event with media:', responseData);
 
-            _this2.setCapabilityValue('alarm_motion', !!value)["catch"](_this2.error);
+              _this2.triggerFlow('motion_detected', {
+                images: responseData.files.map(function (file) {
+                  return {
+                    path: file[0],
+                    id: file[1],
+                    url: "https://".concat(responseData.bucket, ".oss-us-west-1.aliyuncs.com").concat(file[0])
+                  };
+                })
+              });
+
+              _this2.setCapabilityValue('alarm_motion', true).then(function () {
+                return _this2.setCapabilityValue('alarm_motion', false);
+              })["catch"](_this2.error);
+            } catch (error) {
+              _this2.error('Error processing media payload:', error);
+            }
 
             break;
 
           case '185':
             // Media payload
             try {
-              var buffer = Buffer.from(value, 'base64');
-              var responseData = JSON.parse(buffer.toString('utf-8'));
+              var _buffer = Buffer.from(value, 'base64');
 
-              if (responseData.cmd === 'ipc_doorbell') {
-                _this2.homey.app.log('Doorbell ring event with media:', responseData.files);
+              var _responseData = JSON.parse(_buffer.toString('utf-8'));
 
-                _this2.triggerFlow('doorbell_pressed', {
-                  images: responseData.files.map(function (file) {
-                    return {
-                      path: file[0],
-                      id: file[1],
-                      url: "https://".concat(responseData.bucket, ".oss-us-west-1.aliyuncs.com").concat(file[0])
-                    };
-                  })
-                });
+              _this2.homey.app.log('Doorbell ring event with media:', _responseData.files);
 
-                _this2.setCapabilityValue('button', true).then(function () {
-                  return _this2.setCapabilityValue('button', false);
-                })["catch"](_this2.error);
-              }
+              _this2.triggerFlow('doorbell_pressed', {
+                images: _responseData.files.map(function (file) {
+                  return {
+                    path: file[0],
+                    id: file[1],
+                    url: "https://".concat(_responseData.bucket, ".oss-us-west-1.aliyuncs.com").concat(file[0])
+                  };
+                })
+              });
+
+              _this2.setCapabilityValue('button', true).then(function () {
+                return _this2.setCapabilityValue('button', false);
+              })["catch"](_this2.error);
             } catch (error) {
               _this2.error('Error processing media payload:', error);
             }
