@@ -33,9 +33,38 @@ class MyDevice extends Homey.Device {
         this.homey.app.log('Doorbell connected event fired');
         this.setAvailable();
       })
-      .on('disconnected', () => { // can you implement a reconnect strategy so that on connection failure the app automatially tries to reconnect AI!
+      .on('disconnected', () => {
         this.homey.app.log('Doorbell disconnected event fired');
         this.setUnavailable();
+        
+        // Implement reconnection strategy with exponential backoff
+        let retryCount = 0;
+        const maxRetries = 5;
+        const baseDelay = 1000; // Start with 1 second delay
+        
+        const attemptReconnect = async () => {
+          if (retryCount >= maxRetries) {
+            this.homey.app.log('Max reconnection attempts reached');
+            return;
+          }
+          
+          const delay = baseDelay * Math.pow(2, retryCount);
+          this.homey.app.log(`Attempting to reconnect in ${delay}ms (attempt ${retryCount + 1}/${maxRetries})`);
+          
+          await new Promise(resolve => setTimeout(resolve, delay));
+          
+          try {
+            await this.tuyaDevice.connect();
+            this.homey.app.log('Reconnection successful');
+            retryCount = 0; // Reset counter on successful connection
+          } catch (error) {
+            this.homey.app.log('Reconnection failed:', error);
+            retryCount++;
+            attemptReconnect(); // Try again with increased delay
+          }
+        };
+        
+        attemptReconnect();
       })
       .on('error', error => {
         this.homey.app.log('Doorbell error event fired:', error);
