@@ -143,10 +143,19 @@ class MyDevice extends Homey.Device {
           break;
 
         case '115': // Motion detection
-          this.homey.app.log('Motion detection state changed:', value); // can you base64 decode value AI!
-          this.triggerFlow('motion_detected');
-          this.setCapabilityValue('alarm_motion', !!value)
-            .catch(this.error);
+          try {
+            const buffer = Buffer.from(value, 'base64');
+            const motionData = JSON.parse(buffer.toString('utf-8'));
+            this.homey.app.log('Motion detection data:', motionData);
+            this.triggerFlow('motion_detected');
+            this.setCapabilityValue('alarm_motion', true)
+              .then(() => this.setCapabilityValue('alarm_motion', false))
+              .catch(this.error);
+          } catch (error) {
+            this.error('Error decoding motion detection data:', error);
+            this.setCapabilityValue('alarm_motion', !!value)
+              .catch(this.error);
+          }
           break;
 
         case '185': // Media payload
