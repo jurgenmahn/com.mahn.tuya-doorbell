@@ -132,16 +132,6 @@ class MyDevice extends Homey.Device {
     // Handle each DPS value
     Object.entries(data.dps).forEach(([key, value]) => {
       switch (key) {
-        case '1': // Doorbell button press
-          if (value) {
-            this.homey.app.log('Doorbell button pressed');
-            this.triggerFlow('doorbell_pressed');
-            this.setCapabilityValue('button', true)
-              .then(() => this.setCapabilityValue('button', false))
-              .catch(this.error);
-          }
-          break;
-
         case '115': // Motion detection
           try {
             const buffer = Buffer.from(value, 'base64');
@@ -162,7 +152,7 @@ class MyDevice extends Homey.Device {
           }
           break;
 
-        case '185': // Media payload
+        case '185': // Button pressed
           try {
             const buffer = Buffer.from(value, 'base64');
             const responseData = JSON.parse(buffer.toString('utf-8'));

@@ -8,10 +8,10 @@
     "local"
   ],
   "name": {
-    "en": "Tuya doorbell via local API"
+    "en": "Local Tuya Video Doorbell for Homey Pro"
   },
   "description": {
-    "en": "connects the tuya doorbell to the homey by using the device api, so no cloud connection and a lot faster response, but you need to have your local id and key"
+    "en": "Take full control of your Tuya-compatible video doorbell directly through your Homey Pro hub - no cloud required! This app enables local integration of your video doorbell, giving you faster response times and complete privacy by eliminating the need for Tuya's cloud services."
   },
   "category": [
     "security"
@@ -19,8 +19,7 @@
   "permissions": [],
   "images": {
     "small": "/assets/images/small.png",
-    "large": "/assets/images/large.png",
-    "xlarge": "/assets/images/xlarge.png"
+    "large": "/assets/images/large.png"
   },
   "author": {
     "name": "Jurgen Mahn",
@@ -31,98 +30,41 @@
     "triggers": [
       {
         "title": {
-          "en": "Connection is lost"
+          "en": "Doorbell Connection restored"
+        },
+        "hint": {
+          "en": "Doorbell availab le"
+        },
+        "id": "doorbell_connected"
+      },      
+      {
+        "title": {
+          "en": "Doorbell Connection lost"
         },
         "hint": {
           "en": "Doorbell unreachable"
         },
-        "id": "connection-is-lost"
+        "id": "doorbell_disconnected"
       },
       {
         "title": {
           "en": "Doorbell is pressed"
+        },
+        "hint": {
+          "en": "Someone is at the door"
         },
         "tokens": [],
         "id": "doorbell_pressed"
       },
       {
         "title": {
-          "en": "Montion alarm is triggered"
+          "en": "Motion is detected"
         },
         "hint": {
-          "en": "Motion detected"
-        },
-        "id": "montion-alarm-is-triggered"
-      },
-      {
-        "title": {
-          "en": "Motion is detected"
+          "en": "Doorbell detected motion within the selected area"
         },
         "tokens": [],
         "id": "motion_detected"
-      },
-      {
-        "title": {
-          "en": "When the doorbell main button is pressed"
-        },
-        "hint": {
-          "en": "Someone is at the door"
-        },
-        "id": "when-the-doorbell-main-button-is-pressed"
-      },
-      {
-        "title": {
-          "en": "Device error occurred"
-        },
-        "hint": {
-          "en": "The device reported an error state"
-        },
-        "id": "device_error"
-      },
-      {
-        "title": {
-          "en": "Video settings changed"
-        },
-        "tokens": [
-          {
-            "name": "settings",
-            "type": "string",
-            "title": {
-              "en": "Settings"
-            }
-          }
-        ],
-        "id": "video_settings_changed"
-      },
-      {
-        "title": {
-          "en": "Volume changed"
-        },
-        "tokens": [
-          {
-            "name": "volume",
-            "type": "number",
-            "title": {
-              "en": "Volume Level"
-            }
-          }
-        ],
-        "id": "volume_changed"
-      },
-      {
-        "title": {
-          "en": "Motion settings changed"
-        },
-        "tokens": [
-          {
-            "name": "settings",
-            "type": "string",
-            "title": {
-              "en": "Settings"
-            }
-          }
-        ],
-        "id": "motion_settings_changed"
       }
     ]
   },

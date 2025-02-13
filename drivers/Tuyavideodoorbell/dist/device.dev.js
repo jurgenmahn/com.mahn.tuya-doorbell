@@ -252,20 +252,6 @@ function (_Homey$Device) {
             value = _ref2[1];
 
         switch (key) {
-          case '1':
-            // Doorbell button press
-            if (value) {
-              _this2.homey.app.log('Doorbell button pressed');
-
-              _this2.triggerFlow('doorbell_pressed');
-
-              _this2.setCapabilityValue('button', true).then(function () {
-                return _this2.setCapabilityValue('button', false);
-              })["catch"](_this2.error);
-            }
-
-            break;
-
           case '115':
             // Motion detection
             try {
@@ -294,7 +280,7 @@ function (_Homey$Device) {
             break;
 
           case '185':
-            // Media payload
+            // Button pressed
             try {
               var _buffer = Buffer.from(value, 'base64');
 
