@@ -1,23 +1,18 @@
 const Homey = require('homey');
 const TuyAPI = require('tuyapi');
 const net = require('net');
-const os = require('os');
 
-class MyDriver extends Homey.Driver {
+class TuyaLocalDriver extends Homey.Driver {
   async onInit() {
     this.homey.app.log('Tuya Doorbell Driver initialized');
   }
 
   async onPair(session) {
     let pairingDevice = {};
-    
-    // Show the first view
-    session.showView('start');
 
-    // Handle manual settings input
-    session.setHandler('manual_settings', async (data) => {
-      this.homey.app.log('Received manual settings:', data);
-      
+    session.setHandler('search_device', async (data) => {
+      this.homey.app.log('Received settings:', data);
+
       pairingDevice = {
         name: 'Tuya Doorbell',
         data: {
@@ -28,166 +23,70 @@ class MyDriver extends Homey.Driver {
           localKey: data.localKey,
           ipAddress: data.ipAddress,
           port: data.port || 6668
-        }
+        },
+        icon: "/img/devices/doorbell.svg"
       };
-      
-      // Proceed to device validation
-      session.emit('list_devices', [pairingDevice]);
+
+      let ips = [];
+      if (pairingDevice.settings.ipAddress != "") {
+        ips = [pairingDevice.settings.ipAddress];
+      } else {
+        this.homey.app.log("No ipaddress received, scanning network for open port " + pairingDevice.settings.port);
+        ips = await this.scanNetwork(pairingDevice.settings.port);
+        this.homey.app.log("Found devices:", ips);
+      }
+
+      let deviceFound = false;
+      for (const ip of ips) {
+        pairingDevice.settings.ipAddress = ip;
+        if (await this.validateDevice(pairingDevice)) {
+          this.homey.app.log("Doorbell found");
+          this.homey.app.log('get device MACaddress');
+          pairingDevice.data.id = await this.homey.arp.getMAC(ip);
+          deviceFound = true;
+          session.showView('list_devices');
+          break;
+        }
+      }
+
+      if (!deviceFound) {
+        session.showView('start');
+        throw new Error(this.homey.__('errors.no_devices_found'));
+      }
+
     });
 
     // Handle discovered devices list
     session.setHandler('list_devices', async () => {
-      console.log('List devices handler called with pairingDevice:', pairingDevice);
+      this.homey.app.log('List devices handler called with pairingDevice:', pairingDevice);
       if (!pairingDevice || Object.keys(pairingDevice).length === 0) {
         throw new Error(this.homey.__('errors.no_devices_found'));
       }
       return [pairingDevice];
     });
 
-    // Start discovery when entering automatic search
-    session.setHandler('search_auto', async (data) => {
-      console.log("Starting discovery with credentials:", { deviceId: data.deviceId, key: '[hidden]' });
-      try {
-        // First scan network for devices on port 6668
-        console.log("Scanning network for open port 6668...");
-        const ips = await this.scanNetwork();
-        console.log("Found devices:", ips);
-
-        // Try each IP with the provided credentials
-        for (const ip of ips) {
-          try {
-            console.log(`Trying to connect to ${ip} with provided credentials...`);
-            const device = new TuyAPI({
-              id: data.deviceId,
-              key: data.localKey,
-              ip: ip,
-              version: 3.3,
-              nullPayloadOnJSONError: true,
-              issueGetOnConnect: false,  // Don't auto-request on connect
-              issueRefreshOnConnect: false, // Don't auto-refresh on connect
-              port: 6668
-            });
-
-            // Set up error handler before connecting
-            device.on('error', (err) => {
-              console.log('Device error:', err);
-              // Error is handled, prevent it from bubbling up
-            });
-
-            console.log(`Attempting to connect to device at ${ip}...`);
-            await device.connect();
-            console.log(`Successfully connected to device at ${ip}`);
-            
-            // Get device info with increased timeout and retries
-            let status;
-            for (let attempt = 1; attempt <= 3; attempt++) {
-              try {
-                console.log(`Attempt ${attempt} to get device info...`);
-                status = await Promise.race([
-                  device.get({schema: true}),
-                  new Promise((_, reject) => 
-                    setTimeout(() => reject(new Error('Device info timeout')), 15000)
-                  )
-                ]);
-                break; // If successful, exit the retry loop
-              } catch (err) {
-                if (attempt === 3) throw err; // Rethrow on final attempt
-                console.log(`Attempt ${attempt} failed, retrying...`);
-                await new Promise(resolve => setTimeout(resolve, 1000)); // Wait 1s between retries
-              }
-            }
-            console.log(`Got device status:`, status);
-
-            // Verify this is the correct device by checking the device ID
-            if (status && status.dps && (status.dps['101'] !== undefined || status.dps['103'] !== undefined)) {
-              console.log('Found matching doorbell device');
-              
-              try {
-                // Get MAC address using ARP
-                const mac = await this.getMacFromDevice(ip);
-                console.log('Device MAC:', mac);
-                
-                // Store the discovered device and return immediately
-                const discoveredDevice = {
-              name: 'Tuya Doorbell',
-              data: {
-                id: data.deviceId
-              },
-              settings: {
-                deviceId: data.deviceId,
-                localKey: data.localKey,
-                ipAddress: ip,
-                port: 6668,
-                gwID: device.gwID,
-                productKey: device.productKey,
-                mac: device.mac || await this.getMacFromDevice(device)
-              }
-            };
-
-                pairingDevice = discoveredDevice;
-                return [discoveredDevice]; // This will resolve the promise
-              } finally {
-                // Ensure device is disconnected
-                try {
-                  await device.disconnect();
-                  console.log(`Disconnected from device at ${ip}`);
-                } catch (disconnectErr) {
-                  console.log(`Error during disconnect:`, disconnectErr.message);
-                }
-              }
-            }
-            // Not a matching device, disconnect and continue
-            await device.disconnect();
-            console.log(`Not a matching device at ${ip}, continuing search...`);
-          } catch (err) {
-            console.log(`Failed to connect to ${ip}:`, err.message);
-            try {
-              await device.disconnect();
-            } catch (disconnectErr) {
-              console.log(`Error during disconnect:`, disconnectErr.message);
-            }
-            continue;
-          }
-        }
-
-        // If we get here, no device was found
-        throw new Error(this.homey.__('errors.no_devices_found'));
-      } catch (error) {
-        console.error("Discovery failed:", error);
-        throw error; // Propagate error to frontend
-      }
-    });
-
-    // Handle add device
     session.setHandler('add_device', async (data) => {
-      try {
-        console.log("add_device, data:")
-        console.log(data)
+      console.log("add_device, data:")
+      console.log(data)
+
+      const devices = this.getDevices();
+
+      // Find the device by its ID
+      const device = devices.find(device => device.getData().id === data.data.id);
   
-        const devices = this.getDevices();
-  
-        // Find the device by its ID
-        const device = devices.find(device => device.getData().id === data.data.id);
-    
-        if (device) {
-          this.log(`Device found: ${device.getName()}`);
-          await device.setSettings(settings);
-          device.onInit();
-        } else {
-          this.log('Device not found');
-        } 
-      } catch (error) {
-        console.error('Add device failed:', error);
-        throw new Error(this.homey.__('errors.invalid_credentials'));
-      }
-    });
+      if (device) {
+        this.log(`Device found: ${device.getName()}`);
+        device.onInit();
+      } else {
+        this.log('Device not found');
+      } 
+    });       
 
   }
 
-  // Validate credentials before adding device
   async validateDevice(device) {
     try {
-      console.log('Validating device:', device);
+      this.homey.app.log('Validating device:', device);
       const testDevice = new TuyAPI({
         id: device.settings.deviceId,
         key: device.settings.localKey,
@@ -199,106 +98,91 @@ class MyDriver extends Homey.Driver {
 
       // Set up error handler
       testDevice.on('error', err => {
-        console.log('Validation device error:', err);
+        this.homey.app.log('Validation device error:', err);
       });
-      
-      console.log('Attempting to connect to device...');
+
+      this.homey.app.log('Attempting to connect to device...');
       await testDevice.connect();
-      console.log('Connected successfully');
-      
+      this.homey.app.log('Connected successfully');
+
       // Try to get device info
       const status = await Promise.race([
-        testDevice.get({schema: true}),
-        new Promise((_, reject) => 
+        testDevice.get({
+          schema: true
+        }),
+        new Promise((_, reject) =>
           setTimeout(() => reject(new Error('Validation timeout')), 5000)
         )
       ]);
-      console.log('Got device status:', status);
+      this.homey.app.log('Got device status:', status);
+
+      if (status && status.dps && (status.dps['101'] !== undefined || status.dps['103'] !== undefined)) {
+        this.homey.app.log('Found matching doorbell device');
+      } else {
+        this.homey.app.log('Found a tuya device, but not a supported doorbell');
+        this.homey.app.log('Validation failed');
+        await testDevice.disconnect();
+        return false;
+      }
 
       await testDevice.disconnect();
-      console.log('Validation successful');
+      this.homey.app.log('Validation successful');
       return true;
     } catch (error) {
       this.homey.app.log('Validation failed:', error);
-      throw new Error(this.homey.__('pair.validation_failed'));
+      return false;
     }
   }
 
-  async scanNetwork() {
+  async scanNetwork(port, baseAddr = '192.168.113') {
     const foundIPs = [];
-    const baseAddr = '192.168.113';
     const BATCH_SIZE = 25;
     let scannedCount = 0;
 
-    console.log("Starting port scan on network:", baseAddr);
+    this.homey.app.log("Starting port scan on network:", baseAddr);
 
     // Scan in batches to avoid overwhelming the network
     for (let start = 1; start < 255; start += BATCH_SIZE) {
       const end = Math.min(start + BATCH_SIZE, 255);
       const batchPromises = [];
-      
+
       for (let i = start; i < end; i++) {
         const ip = `${baseAddr}.${i}`;
         batchPromises.push(
-        new Promise((resolve) => {
-          const socket = new net.Socket();
-          socket.setTimeout(1000); // Increase timeout for more reliable detection
+          new Promise((resolve) => {
+            const socket = new net.Socket();
+            socket.setTimeout(1000);
 
-          socket.on('connect', () => {
-            console.log(`Found device at ${ip}`);
-            foundIPs.push(ip);
-            socket.destroy();
-            resolve();
-          });
+            socket.on('connect', () => {
+              this.homey.app.log(`Found device at ${ip}`);
+              foundIPs.push(ip);
+              socket.destroy();
+              resolve();
+            });
 
-          socket.on('error', () => {
-            socket.destroy();
-            resolve();
-          });
+            socket.on('error', () => {
+              socket.destroy();
+              resolve();
+            });
 
-          socket.on('timeout', () => {
-            socket.destroy();
-            resolve();
-          });
+            socket.on('timeout', () => {
+              socket.destroy();
+              resolve();
+            });
 
-          socket.connect(6668, ip);
-        })
-      );
-    }
+            socket.connect(port, ip);
+          })
+        );
+      }
 
       await Promise.all(batchPromises);
       scannedCount += BATCH_SIZE;
-      console.log(`Scanned ${scannedCount}/254 addresses...`);
+      this.homey.app.log(`Scanned ${scannedCount}/254 addresses...`);
     }
-    console.log(`Found ${foundIPs.length} devices listening on port 6668`);
+    this.homey.app.log(`Found ${foundIPs.length} devices listening on port ${port}`);
     return foundIPs;
   }
 
-  async getMacFromDevice(ip) {
-    try {
-      const { execSync } = require('child_process');
-      // Run arp -a to get MAC addresses
-      const arpOutput = execSync('arp -a').toString();
-      
-      // Parse the output to find MAC for our IP
-      const lines = arpOutput.split('\n');
-      for (const line of lines) {
-        if (line.includes(ip)) {
-          const match = line.match(/([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})/);
-          if (match) {
-            const mac = match[0].toLowerCase();
-            console.log(`Found MAC address for ${ip}:`, mac);
-            return mac;
-          }
-        }
-      }
-      console.log(`No MAC address found for ${ip}`);
-      return null;
-    } catch (error) {
-      console.log('Failed to get MAC address:', error);
-      return null;
-    }
-  }
 }
 
-module.exports = MyDriver;
+module.exports = TuyaLocalDriver;

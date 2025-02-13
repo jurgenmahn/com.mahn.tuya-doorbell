@@ -1,1 +1,0 @@
-kobler tuya-dørklokken til homey ved å bruke enhets-API-et, så det trengs ingen skytilkobling og responstiden er mye raskere

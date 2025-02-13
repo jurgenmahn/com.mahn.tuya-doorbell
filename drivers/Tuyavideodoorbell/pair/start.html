@@ -1,10 +1,47 @@
-<!-- Pairing Start Screen -->
 <link rel="stylesheet" href="./styles.css">
 <div class="container">
   <h2 data-i18n="pair.start.title"></h2>
-  <p data-i18n="pair.start.subtitle"></p>
-  <ul>
-    <li><button class="homey-button-primary" onclick="Homey.showView('search_auto')" data-i18n="pair.start.items.0.title"></button></li>
-    <li><button class="homey-button-primary" onclick="Homey.showView('manual_settings')" data-i18n="pair.start.items.1.title"></button></li>
-  </ul>
+  <p data-i18n="pair.start.instructions"></p>
+  <form id="dataForm" data-role="advanced">
+    <div class="form-group">
+      <label data-i18n="pair.start.fields.0.label"></label>
+      <input type="text" name="deviceId" required />
+    </div>
+    <div class="form-group">
+      <label data-i18n="pair.start.fields.1.label"></label>
+      <input type="text" name="localKey" required />
+    </div>
+    <div class="form-group">
+      <label data-i18n="pair.start.fields.2.label"></label>
+      <input type="text" name="ipAddress" />
+    </div>
+    <div class="form-group">
+      <label data-i18n="pair.start.fields.3.label"></label>
+      <input type="number" name="port" required value="6668" />
+    </div>
+    <button type="button" onclick="findDevice();" class="homey-button-primary" data-i18n="pair.start.submit"></button>
+  </form>
 </div>
+
+<script type="application/javascript">
+  function findDevice() {
+    Homey.showLoadingOverlay();
+    Homey.emit("search_device", convertToJson() ).then(function (result) {
+      console.log(result);  
+    });
+  }
+
+
+  function convertToJson() {
+    let form = document.getElementById("dataForm");
+    let formData = {};
+    for (let i = 0; i < form.elements.length; i++) {
+      let element = form.elements[i];
+      if (element.type !== "button") {
+        formData[element.name] = element.value;
+      }
+    }
+    return formData;
+
+  }
+</script>

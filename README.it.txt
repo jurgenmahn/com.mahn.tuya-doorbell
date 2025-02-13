@@ -1,1 +1,0 @@
-collega il campanello Tuya a Homey utilizzando l'API del dispositivo, senza connessione al cloud e con una risposta molto più rapida
