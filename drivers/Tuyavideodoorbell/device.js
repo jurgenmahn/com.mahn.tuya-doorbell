@@ -33,7 +33,7 @@ class MyDevice extends Homey.Device {
         this.homey.app.log('Doorbell connected event fired');
         this.setAvailable();
       })
-      .on('disconnected', () => {
+      .on('disconnected', () => { // can you implement a reconnect strategy so that on connection failure the app automatially tries to reconnect AI!
         this.homey.app.log('Doorbell disconnected event fired');
         this.setUnavailable();
       })
