@@ -108,6 +108,27 @@ class MyDevice extends Homey.Device {
     //   '103': null
     // }
 
+
+    // Motion event
+    // [Tuya Doorbell] dp-refresh event fired {
+    //   dps: {
+    //     '115': 'eyJ2IjoiMy4wIiwiYnVja2V0IjoidHktdXMtc3RvcmFnZTMwLXBpYyIsImZpbGVzIjpbWyIvYWNjODRlLTUzNDA0NTQ0LXBwMDFlMjVhMGVmODIzMDExODgyL2RldGVjdC8xNzM5NDg3MDc2LmpwZWciLCIyZTczNDA3NDkzYjNjNGJjIl1dfQ=='
+    //   },
+    //   t: 1739487077
+    // }
+    // [Tuya Doorbell] dp-refresh event fired { dps: { '244': '1' }, t: 1739487077 }    
+    // Decoded: {"v":"3.0","bucket":"ty-us-storage30-pic","files":[["/acc84e-53404544-pp01e25a0ef823011882/detect/1739486999.jpeg","6d6c8b49348930e5"]]}
+
+    // Button pressed
+    // [Tuya Doorbell] dp-refresh event fired {
+    //   dps: {
+    //     '185': 'eyJ2IjoiMy4wIiwiYnVja2V0IjoidHktdXMtc3RvcmFnZTMwLXBpYyIsImNtZCI6ImlwY19kb29yYmVsbCIsInR5cGUiOiJpbWFnZSIsIndpdGgiOiJyZXNvdXJjZXMiLCJmaWxlcyI6W1siL2FjYzg0ZS01MzQwNDU0NC1wcDAxZTI1YTBlZjgyMzAxMTg4Mi9kZXRlY3QvMTczOTQ4NzMwNC5qcGVnIiwiYmIxNjI1YTg1MGI2ZmU4MCJdXX0='
+    //   },
+    //   t: 1739487306
+    // }
+    // [Tuya Doorbell] dp-refresh event fired { dps: { '244': '0' }, t: 1739487306 }    
+    // Decoded: {"v":"3.0","bucket":"ty-us-storage30-pic","cmd":"ipc_doorbell","type":"image","with":"resources","files":[["/acc84e-53404544-pp01e25a0ef823011882/detect/1739487304.jpeg","bb1625a850b6fe80"]]}
+
     // Handle each DPS value
     Object.entries(data.dps).forEach(([key, value]) => {
       switch (key) {
@@ -121,8 +142,8 @@ class MyDevice extends Homey.Device {
           }
           break;
 
-        case '2': // Motion detection
-          this.homey.app.log('Motion detection state changed:', value);
+        case '115': // Motion detection
+          this.homey.app.log('Motion detection state changed:', value); // can you base64 decode value AI!
           this.triggerFlow('motion_detected');
           this.setCapabilityValue('alarm_motion', !!value)
             .catch(this.error);
